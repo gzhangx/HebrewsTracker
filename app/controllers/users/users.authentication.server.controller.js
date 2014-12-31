@@ -135,7 +135,7 @@ exports.saveOAuthUserProfile = function (req, providerUserProfile, done) {
                 return done(err);
             } else {
                 if (!user) {
-                    User.findUniqueUseremail(emailStr,  function (availableUsername) {
+                    User.findUniqueUserEmail(emailStr,  function (availableUsername) {
                         user = new User({
                             firstName: providerUserProfile.firstName,
                             lastName: providerUserProfile.lastName,
@@ -146,7 +146,7 @@ exports.saveOAuthUserProfile = function (req, providerUserProfile, done) {
                             providerData: providerUserProfile.providerData
                         });
 
-                        user.setImageId();
+                        //user.setImageId();
                         // And save the user
                         user.save(function (err) {
                             return done(err, user);

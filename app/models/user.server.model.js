@@ -143,4 +143,19 @@ UserSchema.statics.findUniqueUsername = function(username, suffix, callback) {
 	});
 };
 
+UserSchema.statics.findUniqueUserEmail = function(uemail,  callback) {
+    var _this = this;
+
+    _this.findOne({
+        email: uemail
+    }, function (err, user) {
+        if (!err) {
+            if (!user) {
+                callback(uemail);
+            }
+        }
+    });
+};
+
+
 mongoose.model('User', UserSchema);
