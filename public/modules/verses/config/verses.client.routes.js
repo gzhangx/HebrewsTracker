@@ -13,6 +13,10 @@ angular.module('verses').config(['$stateProvider',
 			url: '/verses/create',
 			templateUrl: 'modules/verses/views/create-verse.client.view.html'
 		}).
+        state('createSimpleVerse', {
+            url: '/recordVerse',
+            templateUrl: 'modules/verses/views/record-verse.client.view.html'
+        }).
 		state('viewVerse', {
 			url: '/verses/:verseId',
 			templateUrl: 'modules/verses/views/view-verse.client.view.html'

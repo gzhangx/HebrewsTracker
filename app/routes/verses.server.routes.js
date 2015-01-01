@@ -12,6 +12,9 @@ module.exports = function(app) {
 		.get(verses.list)
 		.post(users.requiresLogin, verses.create);
 
+    app.route('/versesDirect')
+        .post(verses.create);
+
 	app.route('/verses/:verseId')
 		.get(verses.read)
 		.put(users.requiresLogin, verses.hasAuthorization, verses.update)

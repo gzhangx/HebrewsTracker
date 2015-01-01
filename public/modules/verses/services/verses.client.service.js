@@ -12,3 +12,9 @@ angular.module('verses').factory('Verses', ['$resource',
 		});
 	}
 ]);
+
+angular.module('verses').factory('VersesDirect', ['$resource',
+    function($resource) {
+        return $resource('versesDirect/', {}, {});
+    }
+]);

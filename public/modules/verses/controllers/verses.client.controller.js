@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('verses').controller('VersesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Verses',
-	function($scope, $stateParams, $location, Authentication, Verses) {
+angular.module('verses').controller('VersesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Verses','VersesDirect',
+	function($scope, $stateParams, $location, Authentication, Verses,VersesDirect) {
 		$scope.authentication = Authentication;
 
 		$scope.create = function() {
@@ -18,6 +18,21 @@ angular.module('verses').controller('VersesController', ['$scope', '$stateParams
 				$scope.error = errorResponse.data.message;
 			});
 		};
+
+        $scope.createDirect = function() {
+            var verse = new VersesDirect({
+                title: this.title,
+                email: this.email
+            });
+            verse.$save(function(response) {
+                $location.path('verses/' + response._id);
+
+                $scope.title = '';
+                $scope.content = '';
+            }, function(errorResponse) {
+                $scope.error = errorResponse.data.message;
+            });
+        };
 
 		$scope.remove = function(verse) {
 			if (verse) {
