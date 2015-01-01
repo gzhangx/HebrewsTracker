@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
 /**
  * Article Schema
  */
-var ArticleSchema = new Schema({
+var VerseSchema = new Schema({
 	created: {
 		type: Date,
 		default: Date.now
@@ -20,7 +20,7 @@ var ArticleSchema = new Schema({
 		trim: true,
 		required: 'Title cannot be blank'
 	},
-	content: {
+	ip: {
 		type: String,
 		default: '',
 		trim: true
@@ -31,4 +31,4 @@ var ArticleSchema = new Schema({
 	}
 });
 
-mongoose.model('Article', ArticleSchema);
+mongoose.model('Verse', VerseSchema);

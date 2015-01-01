@@ -1,0 +1,20 @@
+<section data-ng-controller="VersesController" data-ng-init="find()">
+	<div class="page-header">
+		<h1>Verse History</h1>
+	</div>
+	<div class="list-group">
+		<a data-ng-repeat="verse in verses" data-ng-href="#!/verses/{{verse._id}}" class="list-group-item">
+			<small class="list-group-item-text">
+				Posted on
+				<span data-ng-bind="verse.created | date:'mediumDate'"></span>
+				by
+				<span data-ng-bind="verse.user.displayName"></span>
+			</small>
+			<h4 class="list-group-item-heading" data-ng-bind="verse.title"></h4>
+			<p class="list-group-item-text" data-ng-bind="verse.content"></p>
+		</a>
+	</div>
+	<div class="alert alert-warning text-center" data-ng-if="articles.$resolved && !articles.length">
+		<a href="/#!/verses/create">create verse</a>
+	</div>
+</section>
