@@ -1,0 +1,15 @@
+<section data-ng-controller="VersesInfoController" data-ng-init="">
+	<div class="page-header">
+		<h1>Verse Info</h1>
+	</div>
+	<div class="list-group">
+        <table>
+		<tr data-ng-repeat="schLine in schedule.schedule" data-ng-href="#!/verses/{{verse._id}}" class="list-group-item">
+            <td data-ng-repeat="sch in schLine">{{sch}}</td>
+		</tr>
+        </table>
+	</div>
+	<div class="alert alert-warning text-center" data-ng-if="articles.$resolved && !articles.length">
+		<a href="/#!/verses/create">create verse</a>
+	</div>
+</section>

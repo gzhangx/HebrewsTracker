@@ -15,6 +15,10 @@ angular.module('verses').factory('Verses', ['$resource',
 
 angular.module('verses').factory('VersesDirect', ['$resource',
     function($resource) {
-        return $resource('versesDirect/', {}, {});
+        return {
+            rcdDct : $resource('versesDirect/', {}, {}),
+            qryDct: $resource('versesQry/:email', {email:'@email'}, {}),
+            scheduleDct: $resource('schedule.json', {}, {})
+        };
     }
 ]);

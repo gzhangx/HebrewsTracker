@@ -24,6 +24,10 @@ angular.module('verses').config(['$stateProvider',
 		state('editVerse', {
 			url: '/verses/:verseId/edit',
 			templateUrl: 'modules/verses/views/edit-verse.client.view.html'
-		});
+		}).
+            state('VerseInfo', {
+                url: '/versesInfo',
+                templateUrl: 'modules/verses/views/versesInfo.client.view.html'
+            });
 	}
 ]);

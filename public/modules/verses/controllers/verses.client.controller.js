@@ -26,6 +26,7 @@ angular.module('verses').controller('VersesController', ['$scope', '$stateParams
 		$scope.email = getCookie('ckemail');
 		$scope.title = $location.search().title;
         $scope.group = $location.search().group;
+
 		$scope.create = function() {
 			var verse = new Verses({
 				title: this.title,
@@ -39,7 +40,7 @@ angular.module('verses').controller('VersesController', ['$scope', '$stateParams
 		};
 
         $scope.createDirect = function() {
-            var verse = new VersesDirect({
+            var verse = new VersesDirect.rcdDct({
                 title: this.title,
                 email: this.email,
                 group: this.group
