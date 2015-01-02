@@ -3,7 +3,6 @@
 angular.module('verses').controller('VersesInfoController', ['$scope', '$stateParams', '$location', 'Authentication', 'VersesDirect',
 	function($scope, $stateParams, $location, Authentication, VersesDirect) {
 
-        $scope.email = '*';
         $scope.recordedHash = {};
         $scope.curSchedule = [];
         $scope.scheduleStarts = [];
@@ -49,13 +48,16 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             var startDate = new Date(sch.startDate.y, sch.startDate.m, sch.startDate.d);
             $scope.fullSchedule = sch;
             $scope.scheduleStartDate = startDate;
-            var days = dateDiffInDays(startDate, new Date())%728;
+            var daysMax = dateDiffInDays(startDate, new Date());
+            var maxStart = Math.floor(daysMax/7/13)*13;
+            var days = daysMax%728;
+            $scope.daysModed = days;
             var start = Math.floor(days/7/13)*13;
 
             var scheduleStarts = [];
             for (var i = 0; i >=-1 ;i--) {
                 scheduleStarts.push({
-                    Desc : GetDay(startDate, (start*7)+ (i*7*13) ),
+                    Desc : GetDay(startDate, (maxStart*7)+ (i*7*13) ),
                     Days : (start*7)+ (i*7*13)
                 });
             }
@@ -68,12 +70,17 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         });
 
         $scope.emailChanged = function() {
-            $scope.verses = VersesDirect.qryDct.query({email:$scope.email}, function(data) {
-                $scope.recordedHash = {};
+            var eml = $scope.email || null;
+            if (eml === null || eml.trim() === '') {
+                eml = '*';
+            }
+            $scope.verses = VersesDirect.qryDct.query({email:eml}, function(data) {
+                var recordedHash = {};
                 for (var i in $scope.verses) {
                     var tt = $scope.verses[i];
-                    $scope.recordedHash[tt.title] = true;
+                    recordedHash[tt.title] = true;
                 }
+                $scope.recordedHash = recordedHash;
             });
             return true;
         };
