@@ -151,7 +151,7 @@ exports.list = function(req, res) {
     }
 
     var qryAct = function(){
-        Verse.find(qry,{ip:0}).sort('-created').populate('user', 'displayName').exec(function(err, verses) {
+        Verse.find(qry,{ip:0}).sort('-created').populate('user', 'displayName email').exec(function(err, verses) {
             if (err) {
                 return res.status(400).send({
                     message: errorHandler.getErrorMessage(err)

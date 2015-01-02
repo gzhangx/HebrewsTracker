@@ -22,13 +22,21 @@
             background: green;
         }
     </style>
-	<div class="row">
+	<div >
 
 		<div class="row" data-ng-repeat="schLine in curSchedule">
-            <div class="col-xs-1 {{recordedHash[sch] === true?'green':''}}" data-ng-repeat="sch in schLine">{{sch}}</td>
+            <div class="col-xs-1 {{recordedHash[sch] === true?'green':''}}" data-ng-repeat="sch in schLine">{{sch}}</div>
 		</div>
 
 	</div>
+    <div>
+        <div class="row">
+            User Counts:
+            <div class="row" data-ng-repeat="stat in allStats">
+                <div class="col-xs-4">{{stat.displayName}}</div><div class="col-xs-1">{{stat.read}}</div><div class="col-xs-1">{{stat.totalToDate}}</div>
+            </div>
+        </div>
+    </div>
 	<div class="alert alert-warning text-center" data-ng-if="articles.$resolved && !articles.length">
 		<a href="/#!/verses/create">create verse</a>
 	</div>

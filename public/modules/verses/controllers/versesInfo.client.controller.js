@@ -8,6 +8,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         $scope.scheduleStarts = [];
         $scope.scheduleStartDate = null;
         $scope.scheduleStartSel ={};
+        $scope.allStats = {};
         var _MS_PER_DAY = 1000 * 60 * 60 * 24;
         var _MS_PER_HALFDAY = _MS_PER_DAY/2;
 
@@ -42,6 +43,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 curSchedule.push(sch[start + i]);
             }
             $scope.curSchedule = curSchedule;
+            $scope.emailChanged();
         };
 
         $scope.schedule = VersesDirect.scheduleDct.get(function(sch){
@@ -58,7 +60,8 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             for (var i = 0; i >=-1 ;i--) {
                 scheduleStarts.push({
                     Desc : GetDay(startDate, (maxStart*7)+ (i*7*13) ),
-                    Days : (start*7)+ (i*7*13)
+                    Days : (start*7)+ (i*7*13),
+                    DaysPassed: days - (start*7) + 1
                 });
             }
             $scope.scheduleStarts = scheduleStarts;
@@ -69,21 +72,46 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.scheduleChanged();
         });
 
+        $scope.statsByUserId = function() {
+            var allStats = {};
+            var statsAry = [];
+            var svers = $scope.verses;
+            var totalVersToDate = $scope.scheduleStartSel.DaysPassed;
+            for (var i = 0; i < svers.length; i++) {
+                var v = svers[i];
+                var stat = allStats[v.user._id] || null;
+                if (stat === null) {
+                    var ustat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate};
+                    if (ustat.displayName === null || ustat.displayName.trim()==='') {
+                        ustat.displayName = ustat.email;
+                    }
+                    allStats[v.user._id] = ustat;
+                    statsAry.push(ustat);
+                }else {
+                    stat.read++;
+                }
+            }
+            $scope.allStats = statsAry;
+        };
+
         $scope.emailChanged = function() {
             var eml = $scope.email || null;
             if (eml === null || eml.trim() === '') {
                 eml = '*';
             }
+            $scope.recordedHash = {};
             $scope.verses = VersesDirect.qryDct.query({email:eml}, function(data) {
                 var recordedHash = {};
-                for (var i in $scope.verses) {
-                    var tt = $scope.verses[i];
+                var sverses = $scope.verses;
+                for (var i in sverses) {
+                    var tt = sverses[i];
                     recordedHash[tt.title] = true;
                 }
                 $scope.recordedHash = recordedHash;
+                $scope.statsByUserId();
             });
             return true;
         };
-        $scope.emailChanged();
+
 	}
 ]);
