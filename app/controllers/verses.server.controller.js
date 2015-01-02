@@ -141,15 +141,45 @@ exports.delete = function(req, res) {
  * List of verses
  */
 exports.list = function(req, res) {
-	Verse.find().sort('-created').populate('user', 'displayName').exec(function(err, verses) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.json(verses);
-		}
-	});
+    var qry = {};
+    var email = null;
+    if ((req.body || null) !== null) {
+        email = req.body.email || null;
+    }
+    if (email === null || email === '') {
+        email = req.params.email || null;
+    }
+
+    var qryAct = function(){
+        Verse.find(qry,{ip:0}).sort('-created').populate('user', 'displayName').exec(function(err, verses) {
+            if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            } else {
+                res.json(verses);
+            }
+        });
+    }
+
+    if (email !== null && email.trim() !== '' && email !== '*') {
+        email = email.toLowerCase();
+        User.findOne({email: email}).exec(function(err,user){
+            if (err !== null) {
+                console.log(err);return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            }
+            if (user === null) {
+                return res.status(400).send({
+                    message: 'Cant find user'
+                });
+            }
+            qry = {user: new ObjectId(user._id)};
+            console.log('querying user ' + user._id);
+            qryAct();
+        });
+    } else qryAct();
 };
 
 /**
