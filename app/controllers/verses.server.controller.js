@@ -55,6 +55,7 @@ exports.create = function(req, res) {
     }else {
         var email = req.body.email || null;
         if (email === null || email.trim() === '') return res.status(400).send({ message: 'email required'});
+        email = email.toLowerCase();
         User.findOne({email: email}, function(err, user) {
             err = err || null;
             if (err !== null) {

@@ -16,7 +16,13 @@ exports.signup = function(req, res) {
 	// For security measurement we remove the roles from the req.body object
 	delete req.body.roles;
 
+    if ((req.body.email || null) ===null) {
+        return res.status(400).send({
+            message: 'email required'
+        });
+    }
 	// Init Variables
+    req.body.email = req.body.email.toLowerCase();
     req.body.username = req.body.email;
 	var user = new User(req.body);
 	var message = null;
@@ -111,6 +117,7 @@ exports.saveOAuthUserProfile = function (req, providerUserProfile, done) {
     if ((typeof emailStr) !== 'string') {
         emailStr = emailStr.value;
     }
+    emailStr = emailStr.toLowerCase();
     if (!req.user) {
         // Define a search query fields
         //var searchMainProviderIdentifierField = 'providerData.' + providerUserProfile.providerIdentifierField;
