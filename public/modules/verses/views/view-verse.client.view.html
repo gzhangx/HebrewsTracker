@@ -15,8 +15,7 @@
 			Posted on
 			<span data-ng-bind="verse.created | date:'mediumDate'"></span>
 			by
-			<span data-ng-bind="verse.user.displayName"></span>
+			<span data-ng-bind="verse.user.displayName || verse.user.email"></span>
 		</em>
 	</small>
-	<p class="lead" data-ng-bind="verse.content"></p>
 </section>
