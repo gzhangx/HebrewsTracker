@@ -2,9 +2,28 @@
 
 angular.module('verses').controller('VersesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Verses','VersesDirect',
 	function($scope, $stateParams, $location, Authentication, Verses,VersesDirect) {
+
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            var expires = "expires="+d.toUTCString();
+            document.cookie = cname + "=" + cvalue + "; " + expires;
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1);
+                if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+            }
+            return "";
+        }
+
 		$scope.authentication = Authentication;
 
-		$scope.email = $location.search().email;
+		$scope.email = getCookie('ckemail');
 		$scope.title = $location.search().title;
         $scope.group = $location.search().group;
 		$scope.create = function() {
@@ -25,6 +44,7 @@ angular.module('verses').controller('VersesController', ['$scope', '$stateParams
                 email: this.email,
                 group: this.group
             });
+            setCookie('ckemail', this.email, 3650);
             verse.$save(function(response) {
                 $location.path('verses/' + response._id);
             }, function(errorResponse) {
