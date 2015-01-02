@@ -6,16 +6,14 @@ angular.module('verses').controller('VersesController', ['$scope', '$stateParams
 
 		$scope.email = $location.search().email;
 		$scope.title = $location.search().title;
+        $scope.group = $location.search().group;
 		$scope.create = function() {
 			var verse = new Verses({
 				title: this.title,
-				content: this.content
+				group: this.group
 			});
 			verse.$save(function(response) {
 				$location.path('verses/' + response._id);
-
-				$scope.title = '';
-				$scope.content = '';
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -24,13 +22,11 @@ angular.module('verses').controller('VersesController', ['$scope', '$stateParams
         $scope.createDirect = function() {
             var verse = new VersesDirect({
                 title: this.title,
-                email: this.email
+                email: this.email,
+                group: this.group
             });
             verse.$save(function(response) {
                 $location.path('verses/' + response._id);
-
-                $scope.title = '';
-                $scope.content = '';
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });

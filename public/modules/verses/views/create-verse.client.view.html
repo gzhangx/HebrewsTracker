@@ -11,6 +11,12 @@
 						<input name="title" type="text" data-ng-model="title" id="title" class="form-control" placeholder="Title" required>
 					</div>
 				</div>
+                <div class="form-group" ng-class="{ 'has-error': articleForm.group.$dirty && articleForm.group.$invalid }">
+                    <label class="control-label" for="group">Group</label>
+                    <div class="controls">
+                        <input name="group" type="text" data-ng-model="group" id="group" class="form-control" placeholder="Group">
+                    </div>
+                </div>
 				<div class="form-group">
 					<input type="submit" class="btn btn-default">
 				</div>
