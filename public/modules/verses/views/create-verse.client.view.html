@@ -3,15 +3,15 @@
 		<h1>New Verse</h1>
 	</div>
 	<div class="col-md-12">
-		<form name="articleForm" class="form-horizontal" data-ng-submit="create()" novalidate>
+		<form name="versesForm" class="form-horizontal" data-ng-submit="create()" novalidate>
 			<fieldset>
-				<div class="form-group" ng-class="{ 'has-error': articleForm.title.$dirty && articleForm.title.$invalid }">
+				<div class="form-group" ng-class="{ 'has-error': versesForm.title.$dirty && versesForm.title.$invalid }">
 					<label class="control-label" for="title">Title</label>
 					<div class="controls">
 						<input name="title" type="text" data-ng-model="title" id="title" class="form-control" placeholder="Title" required>
 					</div>
 				</div>
-                <div class="form-group" ng-class="{ 'has-error': articleForm.group.$dirty && articleForm.group.$invalid }">
+                <div class="form-group" ng-class="{ 'has-error': versesForm.group.$dirty && versesForm.group.$invalid }">
                     <label class="control-label" for="group">Group</label>
                     <div class="controls">
                         <input name="group" type="text" data-ng-model="group" id="group" class="form-control" placeholder="Group">
