@@ -10,7 +10,7 @@ var mongoose = require('mongoose'),
 	_ = require('lodash');
 
 /**
- * Create a article
+ * Create a verse
  */
 exports.create = function(req, res) {
 	var verse = new Verse(req.body);
@@ -71,14 +71,14 @@ exports.create = function(req, res) {
 
 
 /**
- * Show the current article
+ * Show the current verse
  */
 exports.read = function(req, res) {
 	res.json(req.verse);
 };
 
 /**
- * Update a article
+ * Update a verse
  */
 exports.update = function(req, res) {
 	var verse = req.verse;
@@ -97,7 +97,7 @@ exports.update = function(req, res) {
 };
 
 /**
- * Delete an article
+ * Delete an verse
  */
 exports.delete = function(req, res) {
 	var verse = req.verse;
@@ -114,7 +114,7 @@ exports.delete = function(req, res) {
 };
 
 /**
- * List of Articles
+ * List of verses
  */
 exports.list = function(req, res) {
 	Verse.find().sort('-created').populate('user', 'displayName').exec(function(err, verses) {
@@ -141,7 +141,7 @@ exports.verseByID = function(req, res, next, id) {
 };
 
 /**
- * Article authorization middleware
+ * Verse authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
 	if (req.verse.user.id !== req.user.id) {

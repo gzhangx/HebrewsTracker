@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 /**
- * Article Schema
+ * Verse Schema
  */
 var VerseSchema = new Schema({
 	created: {
