@@ -38,8 +38,9 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             if ( ($scope.scheduleStartSel.Days || null) === null) return;
             var start = Math.floor($scope.scheduleStartSel.Days/7/13)*13;
             var curSchedule = [];
+            var sch = $scope.fullSchedule.schedule;
             for (var i = 0; i < 13; i++) {
-                curSchedule.push($scope.fullSchedule.schedule[start + i]);
+                curSchedule.push(sch[start + i]);
             }
             $scope.curSchedule = curSchedule;
         };
@@ -50,11 +51,6 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.scheduleStartDate = startDate;
             var days = dateDiffInDays(startDate, new Date())%728;
             var start = Math.floor(days/7/13)*13;
-            var curSchedule = [];
-            for (var i = 0; i < 13; i++) {
-                curSchedule.push(sch.schedule[start + i]);
-            }
-            $scope.curSchedule = curSchedule;
 
             var scheduleStarts = [];
             for (var i = 0; i >=-1 ;i--) {
@@ -67,6 +63,8 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             if (scheduleStarts.length > 0) {
                 $scope.scheduleStartSel = scheduleStarts[0];
             }
+
+            $scope.scheduleChanged();
         });
 
         $scope.emailChanged = function() {
