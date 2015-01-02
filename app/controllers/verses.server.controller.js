@@ -38,7 +38,7 @@ exports.create = function(req, res) {
         var today = new Date();
         var utcMill = today.valueOf();
         var utc6Days= 6*24*3600*1000;
-      Verse.findOne({title: title, user: ObjectId(verse.user.id), created: {"$gte": new Date(utcMill - utc6Days)}}).exec(function(err, posts){
+      Verse.findOne({title: title, user: new ObjectId(verse.user.id), created: {'$gte': new Date(utcMill - utc6Days)}}).exec(function(err, posts){
         posts = posts || null;
         if (posts === null) {
             saveFunc();
