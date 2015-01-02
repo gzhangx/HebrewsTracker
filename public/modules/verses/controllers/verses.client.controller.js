@@ -4,6 +4,8 @@ angular.module('verses').controller('VersesController', ['$scope', '$stateParams
 	function($scope, $stateParams, $location, Authentication, Verses,VersesDirect) {
 		$scope.authentication = Authentication;
 
+		$scope.email = $location.search().email;
+		$scope.title = $location.search().title;
 		$scope.create = function() {
 			var verse = new Verses({
 				title: this.title,
