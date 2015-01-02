@@ -9,12 +9,20 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User'),
 	_ = require('lodash');
 
+var ObjectId = mongoose.Types.ObjectId;
+
 /**
  * Create a verse
  */
 exports.create = function(req, res) {
 	var verse = new Verse(req.body);
     verse.ip = req.ip;
+    var title = verse.title || null;
+    if (title === null || title.trim() === '') {
+        return res.status(400).send({
+            message: 'empty title'
+        });
+    }
     var saveFunc = function() {
         verse.save(function(err) {
             if (err) {
@@ -26,9 +34,25 @@ exports.create = function(req, res) {
             }
         });
     };
+    var saveAndCheckDup = function() {
+        var today = new Date();
+        var utcMill = today.valueOf();
+        var utc6Days= 6*24*3600*1000;
+        console.log('6 ays ago is '+new Date(utcMill - utc6Days));
+      Verse.findOne({title: title, user: ObjectId(verse.user.id), created: {"$gte": new Date(utcMill - utc6Days)}}).exec(function(err, posts){
+        posts = posts || null;
+        if (posts === null) {
+            saveFunc();
+        }else {
+            return res.status(400).send({
+                message: 'You already submitted this verse'
+            });
+        }
+      });
+    };
     if ( (req.user || null) !== null) {
 	    verse.user = req.user;
-        saveFunc();
+        saveAndCheckDup();
     }else {
         var email = req.body.email || null;
         if (email === null || email.trim() === '') return res.status(400).send({ message: 'email required'});
@@ -41,7 +65,7 @@ exports.create = function(req, res) {
             user = user || null;
             if (user !== null) {
                 verse.user = user;
-                saveFunc();
+                saveAndCheckDup();
             } else {
                 user = new User({
                     firstName: req.body.firstName,
