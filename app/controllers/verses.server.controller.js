@@ -160,7 +160,7 @@ exports.list = function(req, res) {
                 res.json(verses);
             }
         });
-    }
+    };
 
     if (email !== null && email.trim() !== '' && email !== '*') {
         email = email.toLowerCase();
