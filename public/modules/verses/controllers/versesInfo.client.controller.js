@@ -8,7 +8,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         $scope.scheduleStarts = [];
         $scope.scheduleStartDate = null;
         $scope.scheduleStartSel ={};
-        $scope.allStats = {};
+        $scope.allStats = [];
         var _MS_PER_DAY = 1000 * 60 * 60 * 24;
         var _MS_PER_HALFDAY = _MS_PER_DAY/2;
 
@@ -96,6 +96,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         };
 
         $scope.emailChanged = function() {
+            $scope.allStats = [];
             var eml = $scope.email || null;
             if (eml === null || eml.trim() === '') {
                 eml = '*';
