@@ -34,13 +34,16 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         };
 
         $scope.scheduleChanged = function() {
+            $scope.VersesInSchedule = {};
             if ( ($scope.scheduleStartSel || null) === null) return;
             if ( ($scope.scheduleStartSel.Days || null) === null) return;
             var start = Math.floor($scope.scheduleStartSel.Days/7/13)*13;
             var curSchedule = [];
             var sch = $scope.fullSchedule.schedule;
             for (var i = 0; i < 13; i++) {
-                curSchedule.push(sch[start + i]);
+                var schLine = sch[start + i];
+                for (var j = 1; j < schLine.length; j++) $scope.VersesInSchedule[schLine[j]] = true;
+                curSchedule.push(schLine);
             }
             $scope.curSchedule = curSchedule;
             $scope.emailChanged();
@@ -80,6 +83,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             var totalVersToDate = $scope.scheduleStartSel.DaysPassed;
             for (var i = 0; i < svers.length; i++) {
                 var v = svers[i];
+                if ($scope.VersesInSchedule[v.title] !== true) continue;
                 var stat = allStats[v.user._id] || null;
                 if (stat === null) {
                     var ustat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate};
