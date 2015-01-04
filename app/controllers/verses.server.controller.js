@@ -142,6 +142,11 @@ exports.delete = function(req, res) {
  */
 exports.list = function(req, res) {
 
+    if ((req.user || null) === null) return res.status(400).send({
+        message: 'Not authed'
+    });
+
+
     var utcMill = new Date().valueOf();
     var daysLookback = (13*7 * 2 + 10);
     var utcPastDays= 24*3600*1000 * daysLookback;
@@ -154,6 +159,13 @@ exports.list = function(req, res) {
     }
     if (email === null || email === '') {
         email = req.params.email || null;
+    }
+
+    if (!req.user.IsAdmin()) {
+        if (email === null || email === '*' ) {
+            console.log('user ' + req.user.email+' not admin, set email');
+            email = req.user.email;
+        }
     }
 
     var qryAct = function(){

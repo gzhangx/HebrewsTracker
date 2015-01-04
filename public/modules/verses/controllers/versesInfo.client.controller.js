@@ -9,6 +9,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         $scope.scheduleStartDate = null;
         $scope.scheduleStartSel ={};
         $scope.allStats = [];
+        $scope.email = Authentication.user.email;
         var _MS_PER_DAY = 1000 * 60 * 60 * 24;
         var _MS_PER_HALFDAY = _MS_PER_DAY/2;
 
