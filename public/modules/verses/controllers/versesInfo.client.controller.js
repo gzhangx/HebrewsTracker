@@ -62,7 +62,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
 
             var scheduleStarts = [];
             for (var i = 0; i >=-1 ;i--) {
-                var desc = $scope.GetDay(startDate, (maxStart*7)+ (i*7*13) );
+                var desc = $scope.GetDay(startDate, (maxStart*7)+ (i*7*13) ) + ' - ' + $scope.GetDay(startDate, (maxStart*7)+ ((i+1)*7*13) );
                 scheduleStarts.push({
                     Desc : desc,
                     Days : (start*7)+ (i*7*13),
@@ -99,6 +99,11 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             }
 
             statsAry.sort(function(a,b){return b.read - a.read;});
+            for(var i = 0; i < statsAry.length;i++) {
+                var stat = statsAry[i];
+                if (stat.totalToDate !== 0)
+                    stat.completePct = Math.round(stat.read*100/stat.totalToDate);
+            }
             $scope.allStats = statsAry;
         };
 

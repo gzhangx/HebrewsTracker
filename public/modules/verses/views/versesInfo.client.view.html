@@ -8,9 +8,11 @@
                     <span class="input-group-addon">Email:</span> <input type="text" data-ng-model="email" class="form-control">
                 </div>
             </div>
-            <div class="col-xs-2">
+            <div class="col-xs-3">
+                <div style="width: 220px">
                 <select data-ng-options="sday.Desc for sday in scheduleStarts" data-ng-change="scheduleChanged()" data-ng-model="scheduleStartSel"  class="form-control">
                 </select>
+                </div>
             </div>
 
         </form>
@@ -29,15 +31,17 @@
 		</div>
 
 	</div>
+    <div class="row">&nbsp;</div>
     <div>
         <div class="row">
-            User Counts:
-            <div class="row" data-ng-repeat="stat in allStats">
-                <div class="col-xs-4">{{stat.displayName}}</div><div class="col-xs-1">{{stat.read}}</div><div class="col-xs-1">{{stat.totalToDate}}</div>
-            </div>
+            <div class="col-xs-4">读经状况:</div>
         </div>
+        <div class="row">
+            <div class="col-xs-4">姓名</div><div class="col-xs-1">阅读数量</div><div class="col-xs-1">总篇数</div><div class="col-xs-1">完成</div>
+        </div>
+            <div class="row" data-ng-repeat="stat in allStats">
+                <div class="col-xs-4">{{stat.displayName}}</div><div class="col-xs-1">{{stat.read}}</div><div class="col-xs-1">{{stat.totalToDate}}</div><div class="col-xs-1">{{stat.completePct}}%</div>
+            </div>
     </div>
-	<div class="alert alert-warning text-center" data-ng-if="articles.$resolved && !articles.length">
-		<a href="/#!/verses/create">create verse</a>
-	</div>
+
 </section>
