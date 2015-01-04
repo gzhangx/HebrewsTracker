@@ -1,6 +1,6 @@
 <section data-ng-controller="VersesController" data-ng-init="findOne()">
 	<div class="page-header">
-		<h1 data-ng-bind="verse.title"></h1>
+		已记录 <span data-ng-bind="verse.title"></span>
 	</div>
 	<div class="pull-right" data-ng-show="authentication.user._id == verse.user._id">
 		<a class="btn btn-primary" href="/#!/verses/{{verse._id}}/edit">
@@ -12,7 +12,7 @@
 	</div>
 	<small>
 		<em class="text-muted">
-			Posted on
+            记录时间
 			<span data-ng-bind="verse.created | date:'mediumDate'"></span>
 			by
 			<span data-ng-bind="verse.user.displayName || verse.user.email"></span>

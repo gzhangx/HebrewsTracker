@@ -141,7 +141,13 @@ exports.delete = function(req, res) {
  * List of verses
  */
 exports.list = function(req, res) {
-    var qry = {};
+
+    var utcMill = new Date().valueOf();
+    var daysLookback = (13*7 * 2 + 10);
+    var utcPastDays= 24*3600*1000 * daysLookback;
+    var earliestDay = new Date(utcMill - utcPastDays);
+
+    var qry = { created:{$gt:earliestDay}};
     var email = null;
     if ((req.body || null) !== null) {
         email = req.body.email || null;
