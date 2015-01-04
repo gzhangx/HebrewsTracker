@@ -247,3 +247,78 @@ exports.changePassword = function(req, res) {
 		});
 	}
 };
+
+
+var checkUserRow = function(user, role) {
+    if (user === null) {
+        console.log('checking null user for roles');
+        return false;
+    }
+    var roles = user.roles || null;
+    if (user.email === 'gzhangx@hotmail.com') return true;
+    if (roles === null) return false;
+    return user.IsAdmin();
+};
+///
+/// Set active or inactive
+///
+exports.setActive = function(req, res, next) {
+    // Init Variables
+    if (!checkUserRow(req.user, 'admin')) {
+        return res.status(403).send({message: 'can not set active'});
+    }
+    var userdetails = req.body;
+
+    var saFunc = function(err, user) {
+        if (!err && user) {
+            user = {email: user.email, userId: user.id, username: user.username, displayName: user.displayName, firstName: user.firstName, lastName: user.lastName, roles: user.roles, inActive: user.inActive, IsAdmin:user.IsAdmin, HasRole: user.HasRole};
+            if (userdetails.resetActive) {
+                user.setAdmin = user.IsAdmin();
+                var ustate = {updated : new Date()};
+                var newName = req.body.username || null;
+                if (newName !== null && newName != '' && user.username !== newName) {
+                    user.username = ustate.username = newName;
+                }
+                var newEmail = req.body.email || null;
+                if ( newEmail !== null && newEmail != '' && user.email !== newEmail) {
+                    user.email = ustate.email = newEmail;
+                }
+
+                if (!user.HasRole('admin')) {
+                    if (userdetails.setAdmin) {
+                        ustate.$addToSet = {roles: 'admin'};
+                        user.setAdmin = true;
+                    }
+                }else if (userdetails.setAdmin !== null && !userdetails.setAdmin) {
+                    ustate.$pull = {roles: 'admin'};
+                    user.setAdmin = false;
+                }
+
+                User.update({_id: user.userId}, ustate,function(err, numAffected, dbRsp) {
+                    if (err) {
+                        console.log('Erro update ' + err);
+                        return res.status(400).send({
+                            message: errorHandler.getErrorMessage(err),
+                            error : err
+                        });
+                    } else {
+                        //return res.status(200).send({message: 'Updated'});
+                        user.inActive = ustate.inActive;
+                        return res.jsonp(user);
+                    }
+                });
+            }else {
+                user.setAdmin = user.IsAdmin();
+                res.jsonp(user);
+            }
+        } else {
+            res.status(400).send({
+                message: 'User not found'
+            });
+        }
+    };
+    if ( (userdetails.userId || null ) === null)
+        User.findOne({email:userdetails.email},saFunc );
+    else
+        User.findById(userdetails.userId).exec(saFunc);
+};

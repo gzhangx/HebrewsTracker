@@ -1,5 +1,16 @@
 'use strict';
 
+var hebrewUtils = hebrewUtils || {};
+
+hebrewUtils.utils = {
+    checkRole: function(user, role) {
+        if (user.roles === null) return false;
+        for (var k in user.roles) {
+            if (user.roles[k] == role) return true;
+        }
+        return false;
+    }
+};
 //Start by defining the main module and adding the module dependencies
 angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies);
 

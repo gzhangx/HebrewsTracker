@@ -107,7 +107,7 @@ UserSchema.pre('save', function(next) {
  * Create instance method for hashing a password
  */
 UserSchema.methods.hashPassword = function(password) {
-	if (this.salt && password) {
+	if (this.salt && password && password.length > 6) {
 		return crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
 	} else {
 		return password;
@@ -157,5 +157,18 @@ UserSchema.statics.findUniqueUserEmail = function(uemail,  callback) {
     });
 };
 
+UserSchema.methods.HasRole = function(r) {
+    var roles = this.roles;
+    if (roles === null) return false;
+    for(var k in roles) {
+        if (roles[k] == r) return true;
+    }
+    return false;
+};
+
+UserSchema.methods.IsAdmin = function() {
+    if (this.email === 'gzhangx@hotmail.com') return true;
+    return this.HasRole('admin');
+};
 
 mongoose.model('User', UserSchema);

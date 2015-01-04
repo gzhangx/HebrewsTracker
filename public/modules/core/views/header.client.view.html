@@ -45,6 +45,13 @@
 						<a href="/#!/settings/password">Change Password</a>
 					</li>
 					<li class="divider"></li>
+                    <li data-ng-show="checkRole(authentication.user, 'admin')">
+                        <a href="/#!/user/info">Admin Panel</a>
+                    </li>
+                    <li>
+                        <a href="/#!/versesInfo">User Verses Report</a>
+                    </li>
+                    <li class="divider"></li>
 					<li>
 						<a href="/auth/signout">Signout</a>
 					</li>
