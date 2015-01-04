@@ -16,6 +16,7 @@ var ObjectId = mongoose.Types.ObjectId;
  */
 exports.create = function(req, res) {
 	var verse = new Verse(req.body);
+    verse.dateRead = verse.created = new Date();
     verse.ip = req.ip;
     var title = verse.title || null;
     if (title === null || title.trim() === '') {

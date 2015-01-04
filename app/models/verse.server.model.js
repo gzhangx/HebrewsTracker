@@ -14,6 +14,10 @@ var VerseSchema = new Schema({
 		type: Date,
 		default: Date.now
 	},
+    dateRead : {
+        type: Date,
+        default: Date.now
+    },
     group: {
         type: String,
         default: '',
