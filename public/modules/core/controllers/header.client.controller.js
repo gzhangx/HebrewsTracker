@@ -1,4 +1,5 @@
 'use strict';
+/*global hebrewUtils: true */
 
 angular.module('core').controller('HeaderController', ['$scope', 'Authentication', 'Menus',
 	function($scope, Authentication, Menus) {

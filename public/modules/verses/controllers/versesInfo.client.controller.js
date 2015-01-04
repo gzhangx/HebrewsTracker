@@ -82,10 +82,12 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             var statsAry = [];
             var svers = $scope.verses;
             var totalVersToDate = $scope.scheduleStartSel.DaysPassed;
-            for (var i = 0; i < svers.length; i++) {
+            var i = 0;
+            var stat = null;
+            for (i = 0; i < svers.length; i++) {
                 var v = svers[i];
                 if ($scope.VersesInSchedule[v.title] !== true) continue;
-                var stat = allStats[v.user._id] || null;
+                stat = allStats[v.user._id] || null;
                 if (stat === null) {
                     var ustat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate};
                     if (ustat.displayName === null || ustat.displayName.trim()==='') {
@@ -99,8 +101,8 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             }
 
             statsAry.sort(function(a,b){return b.read - a.read;});
-            for(var i = 0; i < statsAry.length;i++) {
-                var stat = statsAry[i];
+            for(i = 0; i < statsAry.length;i++) {
+                stat = statsAry[i];
                 if (stat.totalToDate !== 0)
                     stat.completePct = Math.round(stat.read*100/stat.totalToDate);
             }

@@ -161,7 +161,7 @@ UserSchema.methods.HasRole = function(r) {
     var roles = this.roles;
     if (roles === null) return false;
     for(var k in roles) {
-        if (roles[k] == r) return true;
+        if (roles[k] === r) return true;
     }
     return false;
 };

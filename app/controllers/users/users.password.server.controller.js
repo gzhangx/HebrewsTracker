@@ -276,11 +276,11 @@ exports.setActive = function(req, res, next) {
                 user.setAdmin = user.IsAdmin();
                 var ustate = {updated : new Date()};
                 var newName = req.body.username || null;
-                if (newName !== null && newName != '' && user.username !== newName) {
+                if (newName !== null && newName !== '' && user.username !== newName) {
                     user.username = ustate.username = newName;
                 }
                 var newEmail = req.body.email || null;
-                if ( newEmail !== null && newEmail != '' && user.email !== newEmail) {
+                if ( newEmail !== null && newEmail !== '' && user.email !== newEmail) {
                     user.email = ustate.email = newEmail;
                 }
 
