@@ -96,6 +96,8 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                     stat.read++;
                 }
             }
+
+            statsAry.sort(function(a,b){return b.read - a.read;});
             $scope.allStats = statsAry;
         };
 
