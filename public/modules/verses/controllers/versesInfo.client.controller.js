@@ -3,13 +3,24 @@
 angular.module('verses').controller('VersesInfoController', ['$scope', '$stateParams', '$location', 'Authentication', 'VersesDirect',
 	function($scope, $stateParams, $location, Authentication, VersesDirect) {
 
+        $scope.scheduleYear = new Date().getFullYear();
+        if ($scope.scheduleYear %2) {
+            $scope.scheduleYear = '' + $scope.scheduleYear + ' - ' + ($scope.scheduleYear+1);
+        } else {
+            $scope.scheduleYear = '' + ($scope.scheduleYear - 1) + ' - ' + $scope.scheduleYear;
+        }
         $scope.recordedHash = {};
         $scope.curSchedule = [];
         $scope.scheduleStarts = [];
         $scope.scheduleStartDate = null;
         $scope.scheduleStartSel ={};
         $scope.allStats = [];
-        $scope.email = Authentication.user.email;
+        if (Authentication.user !== null && Authentication.user !== '') {
+            $scope.hasAuth = true;
+            $scope.email = Authentication.user.email;
+        } else {
+            $scope.hasAuth = false;
+        }
         var _MS_PER_DAY = 1000 * 60 * 60 * 24;
         var _MS_PER_HALFDAY = _MS_PER_DAY/2;
 
