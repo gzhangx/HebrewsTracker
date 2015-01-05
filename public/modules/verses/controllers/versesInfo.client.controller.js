@@ -125,14 +125,14 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 if (stat === null) {
                     stat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate, lates : 0, latesByDay : {}};
                     if (stat.displayName === null || stat.displayName.trim()==='') {
-                        stat.displayName = ustat.email;
+                        stat.displayName = stat.email;
                     }
                     allStats[v.user._id] = stat;
                     statsAry.push(stat);
                 }else {
                     stat.read++;
                 }
-                if (v.vpos.diff != 0) {
+                if (v.vpos.diff !== 0) {
                     stat.latesByDay[v.vpos.diff] = (stat.latesByDay[v.vpos.diff] || 0) + 1;
                     stat.lates++;
                     $scope.recordedHash[v.title] = {valid: true, late: v.vpos.diff, cls : 'late', tip: 'late for ' + v.vpos.diff+' days'};
