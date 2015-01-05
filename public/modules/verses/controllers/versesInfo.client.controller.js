@@ -21,6 +21,11 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         } else {
             $scope.hasAuth = false;
         }
+
+        $scope.resetAll = function() {
+            $scope.allStats = [];
+            $scope.recordedHash = {};
+        };
         var _MS_PER_DAY = 1000 * 60 * 60 * 24;
         var _MS_PER_HALFDAY = _MS_PER_DAY/2;
 
@@ -33,6 +38,13 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             return Math.floor((utc2 + _MS_PER_HALFDAY - utc1) / _MS_PER_DAY);
         }
 
+        function dateDiffInDays728(a, b) {
+            // Discard the time and time-zone information.
+            var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+            var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+            return ((utc2 - utc1) / _MS_PER_DAY) %728;
+        }
         function yyyyMMdd(dt) {
             var yyyy = dt.getFullYear().toString();
             var mm = (dt.getMonth()+1).toString(); // getMonth() is zero-based
@@ -54,7 +66,10 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             var sch = $scope.fullSchedule.schedule;
             for (var i = 0; i < 13; i++) {
                 var schLine = sch[start + i];
-                for (var j = 1; j < schLine.length; j++) $scope.VersesInSchedule[schLine[j]] = true;
+                for (var j = 1; j < schLine.length; j++){
+                    var title = schLine[j];
+                    $scope.VersesInSchedule[title] = $scope.fullSchedule.verses[title];
+                }
                 curSchedule.push(schLine);
             }
             $scope.curSchedule = curSchedule;
@@ -97,18 +112,32 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             var stat = null;
             for (i = 0; i < svers.length; i++) {
                 var v = svers[i];
-                if ($scope.VersesInSchedule[v.title] !== true) continue;
+                var vpos = $scope.VersesInSchedule[v.title] || null;
+                if (vpos === null){
+                    $scope.recordedHash[v.title] = {valid: false, cls:'', tip:null};
+                    continue;
+                }
+                v.vpos = vpos;
+                var diffDays = dateDiffInDays728($scope.scheduleStartDate, new Date(v.dateRead));
+                v.vpos.readPos = diffDays;
+                v.vpos.diff = diffDays - vpos.pos;
                 stat = allStats[v.user._id] || null;
                 if (stat === null) {
-                    var ustat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate};
-                    if (ustat.displayName === null || ustat.displayName.trim()==='') {
-                        ustat.displayName = ustat.email;
+                    stat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate, lates : 0, latesByDay : {}};
+                    if (stat.displayName === null || stat.displayName.trim()==='') {
+                        stat.displayName = ustat.email;
                     }
-                    allStats[v.user._id] = ustat;
-                    statsAry.push(ustat);
+                    allStats[v.user._id] = stat;
+                    statsAry.push(stat);
                 }else {
                     stat.read++;
                 }
+                if (v.vpos.diff != 0) {
+                    stat.latesByDay[v.vpos.diff] = (stat.latesByDay[v.vpos.diff] || 0) + 1;
+                    stat.lates++;
+                    $scope.recordedHash[v.title] = {valid: true, late: v.vpos.diff, cls : 'late', tip: 'late for ' + v.vpos.diff+' days'};
+                } else
+                    $scope.recordedHash[v.title] = {valid: true, late: 0, cls : 'green', tip: 'Completed on ' + v.created};
             }
 
             statsAry.sort(function(a,b){return b.read - a.read;});
@@ -121,18 +150,17 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         };
 
         $scope.emailChanged = function() {
-            $scope.allStats = [];
+            $scope.resetAll();
             var eml = $scope.email || null;
             if (eml === null || eml.trim() === '') {
                 eml = '*';
             }
-            $scope.recordedHash = {};
             $scope.verses = VersesDirect.qryDct.query({email:eml}, function(data) {
                 var recordedHash = {};
                 var sverses = $scope.verses;
                 for (var i in sverses) {
                     var tt = sverses[i];
-                    recordedHash[tt.title] = true;
+                    recordedHash[tt.title] = {};
                 }
                 $scope.recordedHash = recordedHash;
                 $scope.statsByUserId();
