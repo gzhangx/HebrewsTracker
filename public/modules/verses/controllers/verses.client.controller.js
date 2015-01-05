@@ -39,7 +39,11 @@ angular.module('verses').controller('VersesController', ['$scope', '$stateParams
 			});
 		};
 
-        $scope.createDirect = function() {
+        $scope.createDirect = function(valid) {
+            if (!valid) {
+                $scope.error = 'Email not valid';
+                return;
+            }
             var verse = new VersesDirect.rcdDct({
                 title: this.title,
                 email: this.email,

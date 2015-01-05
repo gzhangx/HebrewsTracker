@@ -3,12 +3,12 @@
 		<h1>New Verse</h1>
 	</div>
 	<div class="col-md-12">
-		<form name="articleForm" class="form-horizontal" data-ng-submit="createDirect()" novalidate>
+		<form name="articleForm" class="form-horizontal" data-ng-submit="createDirect(articleForm.$valid)" novalidate>
 			<fieldset>
-                <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error': articleForm.email.$dirty && articleForm.email.$invalid }">
                     <label class="control-label" for="email">Email</label>
                     <div class="controls">
-                        <input type="email" name="email" data-ng-model="email" id="email" class="form-control"  placeholder="Email">
+                        <input type="email" name="email" data-ng-model="email" id="email" class="form-control"  placeholder="Email" required>
                     </div>
                 </div>
 				<div class="form-group" ng-class="{ 'has-error': articleForm.title.$dirty && articleForm.title.$invalid }">
