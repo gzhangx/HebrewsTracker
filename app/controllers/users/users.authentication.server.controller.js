@@ -9,6 +9,10 @@ var _ = require('lodash'),
 	passport = require('passport'),
 	User = mongoose.model('User');
 
+exports.validateEmail = function validateEmail(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
 /**
  * Signup
  */
@@ -23,6 +27,12 @@ exports.signup = function(req, res) {
     }
 	// Init Variables
     req.body.email = req.body.email.toLowerCase();
+
+    if (!exports.validateEmail(req.body.email)) {
+        return res.status(400).send({
+            message: 'Invalid email'
+        });
+    }
     req.body.username = req.body.email;
 	var user = new User(req.body);
 	var message = null;

@@ -9,6 +9,8 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User'),
 	_ = require('lodash');
 
+var UserCtrl = require('./users.server.controller');
+
 var ObjectId = mongoose.Types.ObjectId;
 
 /**
@@ -57,6 +59,9 @@ exports.create = function(req, res) {
         var email = req.body.email || null;
         if (email === null || email.trim() === '') return res.status(400).send({ message: 'email required'});
         email = email.toLowerCase();
+        if (!UserCtrl.validateEmail(req.body.email)) {
+            return res.status(400).send({ message: 'err Invalid email'});
+        }
         User.findOne({email: email}, function(err, user) {
             err = err || null;
             if (err !== null) {
