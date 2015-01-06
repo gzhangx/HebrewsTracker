@@ -149,9 +149,9 @@ exports.delete = function(req, res) {
  */
 exports.list = function(req, res) {
 
-    if ((req.user || null) === null) return res.status(400).send({
-        message: 'Not authed'
-    });
+    //if ((req.user || null) === null) return res.status(400).send({
+    //    message: 'Not authed'
+    //});
 
 
     var utcMill = new Date().valueOf();
@@ -161,19 +161,29 @@ exports.list = function(req, res) {
 
     var qry = { created:{$gt:earliestDay}};
     var email = null;
+    var showAll = false;
     if ((req.body || null) !== null) {
         email = req.body.email || null;
+        showAll = req.body.all === 'true';
     }
     if (email === null || email === '') {
         email = req.params.email || null;
     }
 
-    if (!req.user.IsAdmin()) {
-        if (email === null || email === '*' ) {
-            console.log('user ' + req.user.email+' not admin, set email');
-            email = req.user.email;
+    var isAdmin = false;
+    var curId = null;
+    if ((req.user || null) !== null) {
+        isAdmin = req.user.IsAdmin();
+        curId = req.user.id;
+        if (!isAdmin) {
+            if (email === null || email === '*' ) {
+                //console.log('user ' + req.user.email+' not admin, set email');
+                email = req.user.email;
+            }
         }
     }
+
+    if (showAll) email = '*';
 
     var qryAct = function(){
         Verse.find(qry,{ip:0}).sort('-created').populate('user', 'displayName email').exec(function(err, verses) {
@@ -182,7 +192,19 @@ exports.list = function(req, res) {
                     message: errorHandler.getErrorMessage(err)
                 });
             } else {
-                res.json(verses);
+
+                if (isAdmin) {
+                    res.json(verses);
+                }else {
+                    var cverses = [];
+                    for (var i = 0; i < verses.length; i++){
+                        var v =verses[i];
+                        if (v.user.id !== curId){
+                            cverses.push({title: v.title, group: v.group,user :{id: v.user.id}, dateRead: v.dateRead});
+                        }else cverses.push(v);
+                    }
+                    res.json(cverses);
+                }
             }
         });
     };
@@ -201,7 +223,6 @@ exports.list = function(req, res) {
                 });
             }
             qry = {user: new ObjectId(user._id)};
-            console.log('querying user ' + user._id);
             qryAct();
         });
     } else qryAct();
