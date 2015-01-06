@@ -23,9 +23,18 @@ angular.module('verses').controller('VersesController', ['$scope', '$stateParams
 
 		$scope.authentication = Authentication;
 
+        $scope.isAuthed = false;
 		$scope.email = getCookie('ckemail');
 		$scope.title = $location.search().title;
         $scope.group = $location.search().group;
+
+        if ((Authentication.user || null) !== null) {
+            var email = Authentication.user.email || null;
+            if (email !== null && email !== '') {
+                $scope.email = email;
+                $scope.isAuthed = true;
+            }
+        }
 
 		$scope.create = function() {
 			var verse = new Verses({

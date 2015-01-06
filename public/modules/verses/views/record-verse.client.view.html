@@ -8,7 +8,7 @@
                 <div class="form-group" ng-class="{ 'has-error': articleForm.email.$dirty && articleForm.email.$invalid }">
                     <label class="control-label" for="email">Email</label>
                     <div class="controls">
-                        <input type="email" name="email" data-ng-model="email" id="email" class="form-control"  placeholder="Email" required>
+                        <input type="email" name="email" data-ng-model="email" id="email" class="form-control"  placeholder="Email" required data-ng-disabled="isAuthed">
                     </div>
                 </div>
 				<div class="form-group" ng-class="{ 'has-error': articleForm.title.$dirty && articleForm.title.$invalid }">
