@@ -3,6 +3,7 @@
 angular.module('verses').controller('VersesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Verses','VersesDirect',
 	function($scope, $stateParams, $location, Authentication, Verses,VersesDirect) {
 
+        $scope.dateReadSel = null;
         function setCookie(cname, cvalue, exdays) {
             var d = new Date();
             d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -101,5 +102,17 @@ angular.module('verses').controller('VersesController', ['$scope', '$stateParams
 				verseId: $stateParams.verseId
 			});
 		};
+
+        $scope.openDate = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.opened = true;
+        };
+
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
 	}
 ]);

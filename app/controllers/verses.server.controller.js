@@ -113,6 +113,7 @@ exports.read = function(req, res) {
 exports.update = function(req, res) {
 	var verse = req.verse;
 
+    delete verse.created;
 	verse = _.extend(verse, req.body);
 
 	verse.save(function(err) {
