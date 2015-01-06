@@ -132,7 +132,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 }else {
                     stat.read++;
                 }
-                if (v.vpos.diff !== 0) {
+                if (v.vpos.diff > 0) {
                     stat.latesByDay[v.vpos.diff] = (stat.latesByDay[v.vpos.diff] || 0) + 1;
                     stat.lates++;
                     $scope.recordedHash[v.title] = {valid: true, late: v.vpos.diff, cls : 'late', tip: 'late for ' + v.vpos.diff+' days'};
