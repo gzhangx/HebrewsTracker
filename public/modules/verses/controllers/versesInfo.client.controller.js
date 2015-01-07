@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('verses').controller('VersesInfoController', ['$scope', '$stateParams', '$location', 'Authentication', 'VersesDirect',
-	function($scope, $stateParams, $location, Authentication, VersesDirect) {
+angular.module('verses').controller('VersesInfoController', ['$scope', '$stateParams', '$location', 'Authentication', 'VersesDirect','datashare',
+	function($scope, $stateParams, $location, Authentication, VersesDirect, datashare) {
 
         $scope.scheduleYear = new Date().getFullYear();
         if ($scope.scheduleYear %2) {
@@ -51,10 +51,14 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             var dd  = dt.getDate().toString();
             return yyyy + '/'+(mm[1]?mm:'0'+mm[0]) + '/'+(dd[1]?dd:'0'+dd[0]); // padding
         }
-        $scope.GetDay = function GetDay(a, days) {
+        $scope.GetDay = function(a, days) {
             var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
             var dt = new Date(utc1+ (days*_MS_PER_DAY) + _MS_PER_HALFDAY);
             return yyyyMMdd(dt);
+        };
+        $scope.GetDayOnly = function(d) {
+          if (typeof d === 'string') d= new Date(d);
+          return new Date(d.getFullYear(), d.getMonth(), d.getDate());
         };
 
         $scope.scheduleChanged = function() {
@@ -110,6 +114,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             var totalVersToDate = $scope.scheduleStartSel.DaysPassed;
             var i = 0;
             var stat = null;
+            var readersByDate = {};
             for (i = 0; i < svers.length; i++) {
                 var v = svers[i];
                 var vpos = $scope.VersesInSchedule[v.title] || null;
@@ -119,6 +124,8 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 }
                 v.vpos = vpos;
                 var diffDays = dateDiffInDays728($scope.scheduleStartDate, new Date(v.dateRead));
+                var dayOnly = $scope.GetDayOnly(v.dateRead);
+                readersByDate[dayOnly] = (readersByDate[dayOnly] || 0) + 1;
                 v.vpos.readPos = diffDays;
                 v.vpos.diff = diffDays - vpos.pos;
                 stat = allStats[v.user._id] || null;
@@ -147,6 +154,10 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                     stat.completePct = Math.round(stat.read*100/stat.totalToDate);
             }
             $scope.allStats = statsAry;
+            var readersByDateAry = [];
+            for (var rday in readersByDate) readersByDateAry.push({date: rday, count: readersByDate[rday]});
+            readersByDateAry.sort(function(a,b){ return a.date > b.date;});
+            datashare.readersByDate = readersByDateAry;
         };
 
         $scope.emailChanged = function() {
