@@ -56,9 +56,13 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             var dt = new Date(utc1+ (days*_MS_PER_DAY) + _MS_PER_HALFDAY);
             return yyyyMMdd(dt);
         };
-        $scope.GetDayOnly = function(d) {
+        $scope.GetDateOnly = function(d) {
+            if (typeof d === 'string') d= new Date(d);
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        };
+        $scope.GetDateInt = function(d) {
           if (typeof d === 'string') d= new Date(d);
-          return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+          return (d.getFullYear()*100)+(d.getMonth()*10)+ d.getDate();
         };
 
         $scope.scheduleChanged = function() {
@@ -124,8 +128,10 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 }
                 v.vpos = vpos;
                 var diffDays = dateDiffInDays728($scope.scheduleStartDate, new Date(v.dateRead));
-                var dayOnly = $scope.GetDayOnly(v.dateRead);
-                readersByDate[dayOnly] = (readersByDate[dayOnly] || 0) + 1;
+                var dayOnly = $scope.GetDateInt(v.dateRead);
+                var rbd = readersByDate[dayOnly] || {date: $scope.GetDateOnly(v.dateRead), count : 0};
+                rbd.count++;
+                readersByDate[dayOnly] = rbd;
                 v.vpos.readPos = diffDays;
                 v.vpos.diff = diffDays - vpos.pos;
                 stat = allStats[v.user._id] || null;
@@ -155,7 +161,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             }
             $scope.allStats = statsAry;
             var readersByDateAry = [];
-            for (var rday in readersByDate) readersByDateAry.push({date: rday, count: readersByDate[rday]});
+            for (var rday in readersByDate) readersByDateAry.push(readersByDate[rday]);
             readersByDateAry.sort(function(a,b){ return a.date > b.date;});
             datashare.readersByDate = readersByDateAry;
         };

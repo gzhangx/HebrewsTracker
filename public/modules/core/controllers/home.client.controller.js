@@ -4,9 +4,33 @@
 angular.module('core').controller('HomeController', ['$scope', 'datashare',
 	function($scope, datashare) {
         $scope.dailyReads = datashare;
-        $scope.debugremove = 0;
         $scope.$watch('dailyReads', function(newVal){
-            $scope.debugremove ++;
+            var rbd = $scope.dailyReads.readersByDate;
+            $scope.chartObject.data.rows =[];
+            for (var i =0 ;i < rbd.length; i++) {
+                var dat = rbd[i];
+                $scope.chartObject.data.rows.push({ c:[{ v: dat.date  }, {v: dat.count }]});
+            }
         }, true);
-	}
+
+        $scope.chartObject = {};
+
+        $scope.chartObject.data = {"cols": [
+            {id: "t", label: "Date", type: "date"},
+            {id: "s", label: "Count", type: "number"}
+        ], "rows": [
+            {c: [
+                {v: new Date()},
+                {v: 0}
+            ]}
+        ]};
+
+
+        // $routeParams.chartType == BarChart or PieChart or ColumnChart...
+        $scope.chartObject.type = 'LineChart';
+        $scope.chartObject.options = {
+            'title': 'Readers By Date'
+        }
+
+    }
 ]);

@@ -2,6 +2,5 @@
 
     <div data-ng-include="'modules/verses/views/versesInfo.client.view.html'"></div>
 
-    <div data-ng-bind="debugremove"></div>
-    <div data-ng-repeat="d in dailyReads.readersByDate">{{d.date}} + {{d.count}}</div>
+    <div google-chart chart="chartObject"></div>
 </section>
