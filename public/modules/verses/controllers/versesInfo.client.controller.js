@@ -134,13 +134,13 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 readersByDate[dayOnly] = rbd;
                 v.vpos.readPos = diffDays;
                 v.vpos.diff = diffDays - vpos.pos;
-                stat = allStats[v.user._id] || null;
+                stat = allStats[v.user.id] || null;
                 if (stat === null) {
-                    stat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate, lates : 0, latesByDay : {}};
+                    stat = { user: v.user.id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate, lates : 0, latesByDay : {}};
                     if (stat.displayName === null || stat.displayName.trim()==='') {
                         stat.displayName = stat.email || '*********';
                     }
-                    allStats[v.user._id] = stat;
+                    allStats[v.user.id] = stat;
                     statsAry.push(stat);
                 }else {
                     stat.read++;
