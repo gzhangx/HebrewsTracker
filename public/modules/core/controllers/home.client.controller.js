@@ -15,10 +15,10 @@ angular.module('core').controller('HomeController', ['$scope', 'datashare',
 
         $scope.chartObject = {};
 
-        $scope.chartObject.data = {"cols": [
-            {id: "t", label: "Date", type: "date"},
-            {id: "s", label: "Count", type: "number"}
-        ], "rows": [
+        $scope.chartObject.data = {'cols': [
+            {id: 't', label: '日期', type: 'date'},
+            {id: 's', label: '人数', type: 'number'}
+        ], 'rows': [
             {c: [
                 {v: new Date()},
                 {v: 0}
@@ -29,8 +29,8 @@ angular.module('core').controller('HomeController', ['$scope', 'datashare',
         // $routeParams.chartType == BarChart or PieChart or ColumnChart...
         $scope.chartObject.type = 'LineChart';
         $scope.chartObject.options = {
-            'title': 'Readers By Date'
-        }
+            'title': '每日读者'
+        };
 
     }
 ]);
