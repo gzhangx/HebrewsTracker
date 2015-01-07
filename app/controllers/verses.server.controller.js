@@ -144,6 +144,10 @@ exports.delete = function(req, res) {
 	});
 };
 
+exports.listAnnAll = function(req, res) {
+    req.body.all = true;
+    exports.list(req,res);
+};
 /**
  * List of verses
  */
@@ -164,7 +168,7 @@ exports.list = function(req, res) {
     var showAll = false;
     if ((req.body || null) !== null) {
         email = req.body.email || null;
-        showAll = req.body.all === 'true';
+        showAll = req.body.all === true;
     }
     if (email === null || email === '') {
         email = req.params.email || null;

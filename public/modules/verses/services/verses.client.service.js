@@ -18,6 +18,7 @@ angular.module('verses').factory('VersesDirect', ['$resource',
         return {
             rcdDct : $resource('versesDirect/', {}, {}),
             qryDct: $resource('versesQry/:email', {email:'@email'}, {}),
+            qryAll: $resource('versesQryAll', {}, {}),
             scheduleDct: $resource('schedule.json', {}, {})
         };
     }

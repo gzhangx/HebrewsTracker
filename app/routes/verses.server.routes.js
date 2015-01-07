@@ -14,6 +14,8 @@ module.exports = function(app) {
 
     app.route('/versesQry/:email')
         .get(verses.list);
+    app.route('/versesQryAll')
+        .get(verses.listAnnAll);
 
     app.route('/versesDirect')
         .post(verses.create);

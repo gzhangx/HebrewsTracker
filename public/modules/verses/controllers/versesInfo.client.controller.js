@@ -132,7 +132,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 if (stat === null) {
                     stat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate, lates : 0, latesByDay : {}};
                     if (stat.displayName === null || stat.displayName.trim()==='') {
-                        stat.displayName = stat.email;
+                        stat.displayName = stat.email || '*********';
                     }
                     allStats[v.user._id] = stat;
                     statsAry.push(stat);
@@ -162,12 +162,15 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
 
         $scope.emailChanged = function() {
             $scope.resetAll();
-            if ($scope.hasAuth === false) return;
+            //if ($scope.hasAuth === false) return;
             var eml = $scope.email || null;
             if (eml === null || eml.trim() === '') {
                 eml = '*';
             }
-            $scope.verses = VersesDirect.qryDct.query({email:eml}, function(data) {
+
+            var qry = VersesDirect.qryDct;
+            if (eml === '*') qry = VersesDirect.qryAll;
+            $scope.verses = qry.query({email:eml}, function(data) {
                 var recordedHash = {};
                 var sverses = $scope.verses;
                 for (var i in sverses) {
