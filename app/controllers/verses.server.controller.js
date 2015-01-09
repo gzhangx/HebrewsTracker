@@ -204,7 +204,7 @@ exports.list = function(req, res) {
                     for (var i = 0; i < verses.length; i++){
                         var v =verses[i];
                         if (v.user.id !== curId){
-                            cverses.push({title: v.title, group: v.group,user :{id: v.user.id}, dateRead: v.dateRead});
+                            cverses.push({title: v.title, group: v.group,user :{_id: v.user.id}, dateRead: v.dateRead});
                         }else cverses.push(v);
                     }
                     res.json(cverses);
