@@ -132,7 +132,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 var rbd = readersByDate[dayOnly] || {date: $scope.GetDateOnly(v.dateRead), vcount : 0, pcount: 0, uids:{}};
                 rbd.vcount++;
                 if ((rbd.uids[v.user._id] || null) === null) {
-                    rbd.uids[v.user._id] = 0;
+                    rbd.uids[v.user._id] = 1;
                     rbd.pcount++;
                 } else
                     rbd.uids[v.user._id] = rbd.uids[v.user._id] + 1;
