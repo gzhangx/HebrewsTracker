@@ -129,8 +129,13 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 v.vpos = vpos;
                 var diffDays = dateDiffInDays728($scope.scheduleStartDate, new Date(v.dateRead));
                 var dayOnly = $scope.GetDateInt(v.dateRead);
-                var rbd = readersByDate[dayOnly] || {date: $scope.GetDateOnly(v.dateRead), count : 0};
-                rbd.count++;
+                var rbd = readersByDate[dayOnly] || {date: $scope.GetDateOnly(v.dateRead), vcount : 0, pcount: 0, uids:{}};
+                rbd.vcount++;
+                if ((rbd.uids[v.user._id] || null) === null) {
+                    rbd.uids[v.user._id] = 0;
+                    rbd.pcount++;
+                } else
+                    rbd.uids[v.user._id] = rbd.uids[v.user._id] + 1;
                 readersByDate[dayOnly] = rbd;
                 v.vpos.readPos = diffDays;
                 v.vpos.diff = diffDays - vpos.pos;
