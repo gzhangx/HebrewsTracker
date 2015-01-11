@@ -30,11 +30,15 @@
         }
     </style>
 	<div >
+        <style>
+            td { padding-left: 3px}
+        </style>
+        <table cellpadding="10" cellspacing="10">
+		<tr class="row" data-ng-repeat="schLine in curSchedule">
+            <td class="{{recordedHash[sch].cls}}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch].tip}}">{{sch}} {{recordedHash[sch].dateRead}}</td>
 
-		<div class="row" data-ng-repeat="schLine in curSchedule">
-            <div class="col-xs-1 {{recordedHash[sch].cls}}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch].tip}}">{{sch}}</div>
-		</div>
-
+		</tr>
+        </table>
 	</div>
     <div class="row">&nbsp;</div>
     <div>

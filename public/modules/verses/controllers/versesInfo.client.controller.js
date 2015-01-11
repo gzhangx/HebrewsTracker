@@ -145,12 +145,13 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 }else {
                     stat.read++;
                 }
+                var dayDsp = $scope.GetDay(new Date(v.dateRead), 0);
                 if (v.vpos.diff > 0) {
                     stat.latesByDay[v.vpos.diff] = (stat.latesByDay[v.vpos.diff] || 0) + 1;
                     stat.lates++;
-                    $scope.recordedHash[v.title] = {valid: true, late: v.vpos.diff, cls : 'late', tip: 'late for ' + v.vpos.diff+' days'};
+                    $scope.recordedHash[v.title] = {valid: true, late: v.vpos.diff, cls : 'late', tip: 'late for ' + v.vpos.diff+' days', dateRead: dayDsp};
                 } else
-                    $scope.recordedHash[v.title] = {valid: true, late: 0, cls : 'green', tip: 'Completed on ' + v.created};
+                    $scope.recordedHash[v.title] = {valid: true, late: 0, cls : 'green', tip: 'Completed on ' + v.dateRead, dateRead: dayDsp};
             }
 
             statsAry.sort(function(a,b){return b.read - a.read;});
