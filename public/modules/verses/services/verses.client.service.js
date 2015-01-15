@@ -55,6 +55,7 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             fullSchedule : null,
             scheduleStartDate : null,
             scheduleStarts : [],
+            selectedSchedule: null,
             verses : [],
             curSchedule : [],
             VersesInSchedule: {},
@@ -85,25 +86,38 @@ angular.module('verses').factory('VersesDirect', ['$resource',
                 var desc = getDay(startDate, (maxStart*7)+ (i*7*13) ) + ' - ' + getDay(startDate, (maxStart*7)+ ((i+1)*7*13) );
                 scheduleStarts.push({
                     Desc : desc,
-                    Days : (start*7)+ (i*7*13),
+                    ScheduleStartDay : (start*7)+ (i*7*13),
                     DaysPassed: days - (start*7) + 1
                 });
             }
             res.scheduleStarts = scheduleStarts;
+
+            if (scheduleStarts.length > 0) {
+                res.selectedSchedule = scheduleStarts[0];
+                res.setCurSchedule(res.selectedSchedule.ScheduleStartDay);
+            }
         };
 
-        res.scheduleDctf = function(done){
+        res.scheduleDctf = function(done, email){
+            function endGetSchedule(){
+                res.getUserVerses(email, function(res){
+                    if (res.selectedSchedule !== null) {
+                        res.statsByUserId(res.selectedSchedule.DaysPassed);
+                    }
+                    done(res);
+                });
+            }
             if (res.fullSchedule === null) {
                 $resource('schedule.json', {}, {}).get(function(sch){
                     var startDate = new Date(sch.startDate.y, sch.startDate.m, sch.startDate.d);
                     res.fullSchedule = sch;
                     res.scheduleStartDate = startDate;
                     res.createScheduleStarts(new Date());
-                    done(res);
+                    endGetSchedule();
                 });
             } else {
                 res.createScheduleStarts(new Date());
-                done(res);
+                endGetSchedule();
             }
         };
 
@@ -183,8 +197,8 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             res.readersByDate = readersByDateAry;
         };
 
-        res.setCurSchedule = function(scheduleStartDays) {
-            var start = Math.floor(scheduleStartDays/7/13)*13;
+        res.setCurSchedule = function(scheduleStartDay) {
+            var start = Math.floor(scheduleStartDay/7/13)*13;
             var VersesInSchedule = {};
             var curSchedule = [];
             var sch = res.fullSchedule.schedule;

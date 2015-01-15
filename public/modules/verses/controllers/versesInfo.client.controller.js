@@ -47,8 +47,8 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         $scope.scheduleChanged = function() {
             $scope.VersesInSchedule = {};
             if ( ($scope.scheduleStartSel || null) === null) return;
-            if ( ($scope.scheduleStartSel.Days || null) === null) return;
-            VersesDirect.setCurSchedule($scope.scheduleStartSel.Days);
+            if ( ($scope.scheduleStartSel.ScheduleStartDay || null) === null) return;
+            VersesDirect.setCurSchedule($scope.scheduleStartSel.ScheduleStartDay);
             $scope.VersesInSchedule = VersesDirect.VersesInSchedule;
             $scope.curSchedule = VersesDirect.curSchedule;
             $scope.emailChanged();
@@ -62,7 +62,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             }
 
             $scope.scheduleChanged();
-        });
+        }, $scope.email);
 
     }
 ]);
