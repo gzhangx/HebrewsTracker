@@ -26,36 +26,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.allStats = [];
             $scope.recordedHash = {};
         };
-        var _MS_PER_DAY = 1000 * 60 * 60 * 24;
-        var _MS_PER_HALFDAY = _MS_PER_DAY/2;
 
-        // a and b are javascript Date objects
-        function dateDiffInDays(a, b) {
-            // Discard the time and time-zone information.
-            var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-            var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-
-            return Math.floor((utc2 + _MS_PER_HALFDAY - utc1) / _MS_PER_DAY);
-        }
-
-        function dateDiffInDays728(a, b) {
-            // Discard the time and time-zone information.
-            var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-            var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-
-            return ((utc2 - utc1) / _MS_PER_DAY) %728;
-        }
-        function yyyyMMdd(dt) {
-            var yyyy = dt.getFullYear().toString();
-            var mm = (dt.getMonth()+1).toString(); // getMonth() is zero-based
-            var dd  = dt.getDate().toString();
-            return yyyy + '/'+(mm[1]?mm:'0'+mm[0]) + '/'+(dd[1]?dd:'0'+dd[0]); // padding
-        }
-        $scope.GetDay = function(a, days) {
-            var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-            var dt = new Date(utc1+ (days*_MS_PER_DAY) + _MS_PER_HALFDAY);
-            return yyyyMMdd(dt);
-        };
         $scope.GetDateOnly = function(d) {
             if (typeof d === 'string') d= new Date(d);
             return new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -88,7 +59,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             var startDate = new Date(sch.startDate.y, sch.startDate.m, sch.startDate.d);
             $scope.fullSchedule = sch;
             $scope.scheduleStartDate = startDate;
-            var daysMax = dateDiffInDays(startDate, new Date());
+            var daysMax = VersesDirect.dateDiffInDays(startDate, new Date());
             var maxStart = Math.floor(daysMax/7/13)*13;
             var days = daysMax%728;
             $scope.daysModed = days;
@@ -96,7 +67,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
 
             var scheduleStarts = [];
             for (var i = 0; i >=-1 ;i--) {
-                var desc = $scope.GetDay(startDate, (maxStart*7)+ (i*7*13) ) + ' - ' + $scope.GetDay(startDate, (maxStart*7)+ ((i+1)*7*13) );
+                var desc = VersesDirect.AddDaysToYmd(startDate, (maxStart*7)+ (i*7*13) ) + ' - ' + VersesDirect.AddDaysToYmd(startDate, (maxStart*7)+ ((i+1)*7*13) );
                 scheduleStarts.push({
                     Desc : desc,
                     Days : (start*7)+ (i*7*13),
@@ -127,7 +98,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                     continue;
                 }
                 v.vpos = vpos;
-                var diffDays = dateDiffInDays728($scope.scheduleStartDate, new Date(v.dateRead));
+                var diffDays = VersesDirect.dateDiffInDays728($scope.scheduleStartDate, new Date(v.dateRead));
                 var dayOnly = $scope.GetDateInt(v.dateRead);
                 var rbd = readersByDate[dayOnly] || {date: $scope.GetDateOnly(v.dateRead), vcount : 0, pcount: 0, uids:{}};
                 rbd.vcount++;
@@ -150,7 +121,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 }else {
                     stat.read++;
                 }
-                var dayDsp = $scope.GetDay(new Date(v.dateRead), 0);
+                var dayDsp = VersesDirect.AddDaysToYmd(new Date(v.dateRead), 0);
                 if (v.vpos.diff > 0) {
                     stat.latesByDay[v.vpos.diff] = (stat.latesByDay[v.vpos.diff] || 0) + 1;
                     stat.lates++;
