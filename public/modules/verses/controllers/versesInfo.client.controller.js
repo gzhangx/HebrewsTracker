@@ -37,12 +37,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         $scope.emailChanged = function() {
             $scope.resetAll();
             //if ($scope.hasAuth === false) return;
-            var eml = $scope.email || null;
-            if (eml === null || eml.trim() === '') {
-                eml = '*';
-            }
-
-            VersesDirect.getUserVerses(eml, function(res){
+            VersesDirect.getUserVerses($scope.email, function(res){
                 $scope.verses = res.verses;
                 $scope.statsByUserId();
             });

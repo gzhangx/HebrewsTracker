@@ -107,7 +107,11 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             }
         };
 
-        res.getUserVerses = function(eml, done) {
+        res.getUserVerses = function(email, done) {
+            var eml = email || null;
+            if (eml === null || eml.trim() === '') {
+                eml = '*';
+            }
             var qry = res.qryDct;
             if (eml === '*') qry = res.qryAll;
             qry.query({email:eml}, function(data) {
