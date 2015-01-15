@@ -79,13 +79,18 @@ angular.module('verses').factory('VersesDirect', ['$resource',
         };
 
         res.scheduleDctf = function(done){
-            $resource('schedule.json', {}, {}).get(function(sch){
-                var startDate = new Date(sch.startDate.y, sch.startDate.m, sch.startDate.d);
-                res.fullSchedule = sch;
-                res.scheduleStartDate = startDate;
+            if (res.fullSchedule === null) {
+                $resource('schedule.json', {}, {}).get(function(sch){
+                    var startDate = new Date(sch.startDate.y, sch.startDate.m, sch.startDate.d);
+                    res.fullSchedule = sch;
+                    res.scheduleStartDate = startDate;
+                    createScheduleStarts(new Date());
+                    done(res);
+                });
+            } else {
                 createScheduleStarts(new Date());
                 done(res);
-            });
+            }
         };
         return res;
     }
