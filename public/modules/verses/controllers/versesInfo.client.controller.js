@@ -55,25 +55,11 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.emailChanged();
         };
 
-        $scope.schedule = VersesDirect.scheduleDct.get(function(sch){
-            var startDate = new Date(sch.startDate.y, sch.startDate.m, sch.startDate.d);
-            $scope.fullSchedule = sch;
-            $scope.scheduleStartDate = startDate;
-            var daysMax = VersesDirect.dateDiffInDays(startDate, new Date());
-            var maxStart = Math.floor(daysMax/7/13)*13;
-            var days = daysMax%728;
-            $scope.daysModed = days;
-            var start = Math.floor(days/7/13)*13;
+        VersesDirect.scheduleDctf(function(res){
+            $scope.fullSchedule = res.fullSchedule;
+            $scope.scheduleStartDate = res.scheduleStartDate;
 
-            var scheduleStarts = [];
-            for (var i = 0; i >=-1 ;i--) {
-                var desc = VersesDirect.AddDaysToYmd(startDate, (maxStart*7)+ (i*7*13) ) + ' - ' + VersesDirect.AddDaysToYmd(startDate, (maxStart*7)+ ((i+1)*7*13) );
-                scheduleStarts.push({
-                    Desc : desc,
-                    Days : (start*7)+ (i*7*13),
-                    DaysPassed: days - (start*7) + 1
-                });
-            }
+            var scheduleStarts = res.scheduleStarts;
             $scope.scheduleStarts = scheduleStarts;
             if (scheduleStarts.length > 0) {
                 $scope.scheduleStartSel = scheduleStarts[0];

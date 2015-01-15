@@ -40,19 +40,53 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             var dd  = dt.getDate().toString();
             return yyyy + '/'+(mm[1]?mm:'0'+mm[0]) + '/'+(dd[1]?dd:'0'+dd[0]); // padding
         }
-        function GetDay(a, days) {
+        function getDay(a, days) {
             var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
             var dt = new Date(utc1+ (days*_MS_PER_DAY) + _MS_PER_HALFDAY);
             return yyyyMMdd(dt);
-        };
-        return {
+        }
+
+        function createScheduleStarts(curDate) {
+            var startDate = res.scheduleStartDate;
+            var daysMax = dateDiffInDays(startDate, curDate);
+            var maxStart = Math.floor(daysMax/7/13)*13;
+            var days = daysMax%728;
+            var start = Math.floor(days/7/13)*13;
+
+            var scheduleStarts = [];
+            for (var i = 0; i >=-1 ;i--) {
+                var desc = getDay(startDate, (maxStart*7)+ (i*7*13) ) + ' - ' + getDay(startDate, (maxStart*7)+ ((i+1)*7*13) );
+                scheduleStarts.push({
+                    Desc : desc,
+                    Days : (start*7)+ (i*7*13),
+                    DaysPassed: days - (start*7) + 1
+                });
+            }
+            res.scheduleStarts = scheduleStarts;
+        }
+
+        var res = {
+            fullSchedule : null,
+            scheduleStartDate : null,
+            scheduleStarts : [],
             rcdDct : $resource('versesDirect/', {}, {}),
             qryDct: $resource('versesQry/:email', {email:'@email'}, {}),
             qryAll: $resource('versesQryAll', {}, {}),
             scheduleDct: $resource('schedule.json', {}, {}),
-            AddDaysToYmd: GetDay,
+            AddDaysToYmd: getDay,
             dateDiffInDays728: dateDiffInDays728,
-            dateDiffInDays: dateDiffInDays
+            createScheduleStarts: createScheduleStarts
         };
+
+        res.scheduleDctf = function(done){
+            $resource('schedule.json', {}, {}).get(function(sch){
+                var startDate = new Date(sch.startDate.y, sch.startDate.m, sch.startDate.d);
+                res.fullSchedule = sch;
+                res.scheduleStartDate = startDate;
+                createScheduleStarts(new Date());
+                done(res);
+            });
+        };
+        return res;
     }
 ]);
