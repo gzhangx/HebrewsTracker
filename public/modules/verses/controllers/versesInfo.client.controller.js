@@ -61,7 +61,10 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 $scope.scheduleStartSel = scheduleStarts[0];
             }
 
-            $scope.scheduleChanged();
+            $scope.curSchedule = VersesDirect.curSchedule;
+            $scope.allStats = VersesDirect.allStats;
+            $scope.recordedHash = VersesDirect.recordedHash;
+            datashare.readersByDate = VersesDirect.readersByDate;
         }, $scope.email);
 
     }
