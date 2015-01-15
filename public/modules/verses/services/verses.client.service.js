@@ -50,24 +50,6 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             if (typeof d === 'string') d= new Date(d);
             return (d.getFullYear()*100)+(d.getMonth()*10)+ d.getDate();
         }
-        function createScheduleStarts(curDate) {
-            var startDate = res.scheduleStartDate;
-            var daysMax = dateDiffInDays(startDate, curDate);
-            var maxStart = Math.floor(daysMax/7/13)*13;
-            var days = daysMax%728;
-            var start = Math.floor(days/7/13)*13;
-
-            var scheduleStarts = [];
-            for (var i = 0; i >=-1 ;i--) {
-                var desc = getDay(startDate, (maxStart*7)+ (i*7*13) ) + ' - ' + getDay(startDate, (maxStart*7)+ ((i+1)*7*13) );
-                scheduleStarts.push({
-                    Desc : desc,
-                    Days : (start*7)+ (i*7*13),
-                    DaysPassed: days - (start*7) + 1
-                });
-            }
-            res.scheduleStarts = scheduleStarts;
-        }
 
         var res = {
             fullSchedule : null,
@@ -85,11 +67,29 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             scheduleDct: $resource('schedule.json', {}, {}),
             AddDaysToYmd: getDay,
             dateDiffInDays728: dateDiffInDays728,
-            createScheduleStarts: createScheduleStarts,
             getDateOnly : function(d) {
                 if (typeof d === 'string') d= new Date(d);
                 return new Date(d.getFullYear(), d.getMonth(), d.getDate());
             }
+        };
+
+        res.createScheduleStarts = function(curDate) {
+            var startDate = res.scheduleStartDate;
+            var daysMax = dateDiffInDays(startDate, curDate);
+            var maxStart = Math.floor(daysMax/7/13)*13;
+            var days = daysMax%728;
+            var start = Math.floor(days/7/13)*13;
+
+            var scheduleStarts = [];
+            for (var i = 0; i >=-1 ;i--) {
+                var desc = getDay(startDate, (maxStart*7)+ (i*7*13) ) + ' - ' + getDay(startDate, (maxStart*7)+ ((i+1)*7*13) );
+                scheduleStarts.push({
+                    Desc : desc,
+                    Days : (start*7)+ (i*7*13),
+                    DaysPassed: days - (start*7) + 1
+                });
+            }
+            res.scheduleStarts = scheduleStarts;
         };
 
         res.scheduleDctf = function(done){
@@ -98,11 +98,11 @@ angular.module('verses').factory('VersesDirect', ['$resource',
                     var startDate = new Date(sch.startDate.y, sch.startDate.m, sch.startDate.d);
                     res.fullSchedule = sch;
                     res.scheduleStartDate = startDate;
-                    createScheduleStarts(new Date());
+                    res.createScheduleStarts(new Date());
                     done(res);
                 });
             } else {
-                createScheduleStarts(new Date());
+                res.createScheduleStarts(new Date());
                 done(res);
             }
         };
