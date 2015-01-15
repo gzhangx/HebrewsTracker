@@ -43,7 +43,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                     continue;
                 }
                 v.vpos = vpos;
-                var diffDays = VersesDirect.dateDiffInDays728($scope.scheduleStartDate, new Date(v.dateRead));
+                var diffDays = VersesDirect.dateDiffInDays728(VersesDirect.scheduleStartDate, new Date(v.dateRead));
                 var dayOnly = VersesDirect.getDateInt(v.dateRead);
                 var rbd = readersByDate[dayOnly] || {date: VersesDirect.getDateOnly(v.dateRead), vcount : 0, pcount: 0, uids:{}};
                 rbd.vcount++;
@@ -117,12 +117,12 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             if ( ($scope.scheduleStartSel.Days || null) === null) return;
             var start = Math.floor($scope.scheduleStartSel.Days/7/13)*13;
             var curSchedule = [];
-            var sch = $scope.fullSchedule.schedule;
+            var sch = VersesDirect.fullSchedule.schedule;
             for (var i = 0; i < 13; i++) {
                 var schLine = sch[start + i];
                 for (var j = 1; j < schLine.length; j++){
                     var title = schLine[j];
-                    $scope.VersesInSchedule[title] = $scope.fullSchedule.verses[title];
+                    $scope.VersesInSchedule[title] = VersesDirect.fullSchedule.verses[title];
                 }
                 curSchedule.push(schLine);
             }
@@ -131,9 +131,6 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         };
 
         VersesDirect.scheduleDctf(function(res){
-            $scope.fullSchedule = res.fullSchedule;
-            $scope.scheduleStartDate = res.scheduleStartDate;
-
             var scheduleStarts = res.scheduleStarts;
             $scope.scheduleStarts = scheduleStarts;
             if (scheduleStarts.length > 0) {
