@@ -46,6 +46,10 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             return yyyyMMdd(dt);
         }
 
+        function getDateInt(d) {
+            if (typeof d === 'string') d= new Date(d);
+            return (d.getFullYear()*100)+(d.getMonth()*10)+ d.getDate();
+        }
         function createScheduleStarts(curDate) {
             var startDate = res.scheduleStartDate;
             var daysMax = dateDiffInDays(startDate, curDate);
@@ -72,6 +76,9 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             verses : [],
             curSchedule : [],
             VersesInSchedule: {},
+            recordedHash : {},
+            allStats : {},
+            readersByDate : [],
             rcdDct : $resource('versesDirect/', {}, {}),
             qryDct: $resource('versesQry/:email', {email:'@email'}, {}),
             qryAll: $resource('versesQryAll', {}, {}),
@@ -82,10 +89,6 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             getDateOnly : function(d) {
                 if (typeof d === 'string') d= new Date(d);
                 return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-            },
-            getDateInt : function(d) {
-                if (typeof d === 'string') d= new Date(d);
-                return (d.getFullYear()*100)+(d.getMonth()*10)+ d.getDate();
             }
         };
 
@@ -107,16 +110,73 @@ angular.module('verses').factory('VersesDirect', ['$resource',
         res.getUserVerses = function(eml, done) {
             var qry = res.qryDct;
             if (eml === '*') qry = res.qryAll;
-            res.verses = qry.query({email:eml}, function(data) {
-                var recordedHash = {};
-                var sverses = data;
-                for (var i in sverses) {
-                    var tt = sverses[i];
-                    recordedHash[tt.title] = {};
-                }
-                res.recordedHash = recordedHash;
+            qry.query({email:eml}, function(data) {
+                res.verses = data;
                 if (done) done(res);
             });
+        };
+
+        //set recordedHash (of reads and lates), allStats (for all users), and
+        res.statsByUserId = function(totalVersToDate) {
+            var allStats = {};
+            var statsAry = [];
+            var svers = res.verses;
+            var i = 0;
+            var stat = null;
+            var readersByDate = {};
+            var recordedHash = {};
+            for (i = 0; i < svers.length; i++) {
+                var v = svers[i];
+                var vpos = res.VersesInSchedule[v.title] || null;
+                if (vpos === null){
+                    recordedHash[v.title] = {valid: false, cls:'', tip:null};
+                    continue;
+                }
+                v.vpos = vpos;
+                var diffDays = dateDiffInDays728(res.scheduleStartDate, new Date(v.dateRead));
+                var dayOnly = getDateInt(v.dateRead);
+                var rbd = readersByDate[dayOnly] || {date: res.getDateOnly(v.dateRead), vcount : 0, pcount: 0, uids:{}};
+                rbd.vcount++;
+                if ((rbd.uids[v.user._id] || null) === null) {
+                    rbd.uids[v.user._id] = 1;
+                    rbd.pcount++;
+                } else
+                    rbd.uids[v.user._id] = rbd.uids[v.user._id] + 1;
+                readersByDate[dayOnly] = rbd;
+                v.vpos.readPos = diffDays;
+                v.vpos.diff = diffDays - vpos.pos;
+                stat = allStats[v.user._id] || null;
+                if (stat === null) {
+                    stat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate, lates : 0, latesByDay : {}};
+                    if (stat.displayName === null || stat.displayName.trim()==='') {
+                        stat.displayName = stat.email || '*********';
+                    }
+                    allStats[v.user._id] = stat;
+                    statsAry.push(stat);
+                }else {
+                    stat.read++;
+                }
+                var dayDsp = res.AddDaysToYmd(new Date(v.dateRead), 0);
+                if (v.vpos.diff > 0) {
+                    stat.latesByDay[v.vpos.diff] = (stat.latesByDay[v.vpos.diff] || 0) + 1;
+                    stat.lates++;
+                    recordedHash[v.title] = {valid: true, late: v.vpos.diff, cls : 'late', tip: 'late for ' + v.vpos.diff+' days', dateRead: dayDsp};
+                } else
+                    recordedHash[v.title] = {valid: true, late: 0, cls : 'green', tip: 'Completed on ' + v.dateRead, dateRead: dayDsp};
+            }
+
+            res.recordedHash = recordedHash;
+            statsAry.sort(function(a,b){return b.read - a.read;});
+            for(i = 0; i < statsAry.length;i++) {
+                stat = statsAry[i];
+                if (stat.totalToDate !== 0)
+                    stat.completePct = Math.round(stat.read*100/stat.totalToDate);
+            }
+            res.allStats = statsAry;
+            var readersByDateAry = [];
+            for (var rday in readersByDate) readersByDateAry.push(readersByDate[rday]);
+            readersByDateAry.sort(function(a,b){ return a.date > b.date;});
+            res.readersByDate = readersByDateAry;
         };
 
         res.setCurSchedule = function(scheduleStartDays) {
