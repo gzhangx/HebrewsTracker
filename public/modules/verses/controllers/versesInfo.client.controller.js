@@ -96,16 +96,9 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 eml = '*';
             }
 
-            var qry = VersesDirect.qryDct;
-            if (eml === '*') qry = VersesDirect.qryAll;
-            $scope.verses = qry.query({email:eml}, function(data) {
-                var recordedHash = {};
-                var sverses = data;
-                for (var i in sverses) {
-                    var tt = sverses[i];
-                    recordedHash[tt.title] = {};
-                }
-                $scope.recordedHash = recordedHash;
+            VersesDirect.getUserVerses(eml, function(res){
+                $scope.verses = res.verses;
+                $scope.recordedHash = res.recordedHash;
                 $scope.statsByUserId();
             });
             return true;
@@ -115,18 +108,9 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.VersesInSchedule = {};
             if ( ($scope.scheduleStartSel || null) === null) return;
             if ( ($scope.scheduleStartSel.Days || null) === null) return;
-            var start = Math.floor($scope.scheduleStartSel.Days/7/13)*13;
-            var curSchedule = [];
-            var sch = VersesDirect.fullSchedule.schedule;
-            for (var i = 0; i < 13; i++) {
-                var schLine = sch[start + i];
-                for (var j = 1; j < schLine.length; j++){
-                    var title = schLine[j];
-                    $scope.VersesInSchedule[title] = VersesDirect.fullSchedule.verses[title];
-                }
-                curSchedule.push(schLine);
-            }
-            $scope.curSchedule = curSchedule;
+            VersesDirect.setCurSchedule($scope.scheduleStartSel.Days);
+            $scope.VersesInSchedule = VersesDirect.VersesInSchedule;
+            $scope.curSchedule = VersesDirect.curSchedule;
             $scope.emailChanged();
         };
 

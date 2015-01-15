@@ -69,6 +69,9 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             fullSchedule : null,
             scheduleStartDate : null,
             scheduleStarts : [],
+            verses : [],
+            curSchedule : [],
+            VersesInSchedule: {},
             rcdDct : $resource('versesDirect/', {}, {}),
             qryDct: $resource('versesQry/:email', {email:'@email'}, {}),
             qryAll: $resource('versesQryAll', {}, {}),
@@ -99,6 +102,38 @@ angular.module('verses').factory('VersesDirect', ['$resource',
                 createScheduleStarts(new Date());
                 done(res);
             }
+        };
+
+        res.getUserVerses = function(eml, done) {
+            var qry = res.qryDct;
+            if (eml === '*') qry = res.qryAll;
+            res.verses = qry.query({email:eml}, function(data) {
+                var recordedHash = {};
+                var sverses = data;
+                for (var i in sverses) {
+                    var tt = sverses[i];
+                    recordedHash[tt.title] = {};
+                }
+                res.recordedHash = recordedHash;
+                if (done) done(res);
+            });
+        };
+
+        res.setCurSchedule = function(scheduleStartDays) {
+            var start = Math.floor(scheduleStartDays/7/13)*13;
+            var VersesInSchedule = {};
+            var curSchedule = [];
+            var sch = res.fullSchedule.schedule;
+            for (var i = 0; i < 13; i++) {
+                var schLine = sch[start + i];
+                for (var j = 1; j < schLine.length; j++){
+                    var title = schLine[j];
+                    VersesInSchedule[title] = res.fullSchedule.verses[title];
+                }
+                curSchedule.push(schLine);
+            }
+            res.curSchedule = curSchedule;
+            res.VersesInSchedule = VersesInSchedule;
         };
         return res;
     }
