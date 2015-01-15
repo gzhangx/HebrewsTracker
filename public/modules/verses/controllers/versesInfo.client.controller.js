@@ -100,7 +100,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             if (eml === '*') qry = VersesDirect.qryAll;
             $scope.verses = qry.query({email:eml}, function(data) {
                 var recordedHash = {};
-                var sverses = $scope.verses;
+                var sverses = data;
                 for (var i in sverses) {
                     var tt = sverses[i];
                     recordedHash[tt.title] = {};
