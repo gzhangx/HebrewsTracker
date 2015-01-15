@@ -27,47 +27,6 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.recordedHash = {};
         };
 
-        $scope.GetDateOnly = function(d) {
-            if (typeof d === 'string') d= new Date(d);
-            return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-        };
-        $scope.GetDateInt = function(d) {
-          if (typeof d === 'string') d= new Date(d);
-          return (d.getFullYear()*100)+(d.getMonth()*10)+ d.getDate();
-        };
-
-        $scope.scheduleChanged = function() {
-            $scope.VersesInSchedule = {};
-            if ( ($scope.scheduleStartSel || null) === null) return;
-            if ( ($scope.scheduleStartSel.Days || null) === null) return;
-            var start = Math.floor($scope.scheduleStartSel.Days/7/13)*13;
-            var curSchedule = [];
-            var sch = $scope.fullSchedule.schedule;
-            for (var i = 0; i < 13; i++) {
-                var schLine = sch[start + i];
-                for (var j = 1; j < schLine.length; j++){
-                    var title = schLine[j];
-                    $scope.VersesInSchedule[title] = $scope.fullSchedule.verses[title];
-                }
-                curSchedule.push(schLine);
-            }
-            $scope.curSchedule = curSchedule;
-            $scope.emailChanged();
-        };
-
-        VersesDirect.scheduleDctf(function(res){
-            $scope.fullSchedule = res.fullSchedule;
-            $scope.scheduleStartDate = res.scheduleStartDate;
-
-            var scheduleStarts = res.scheduleStarts;
-            $scope.scheduleStarts = scheduleStarts;
-            if (scheduleStarts.length > 0) {
-                $scope.scheduleStartSel = scheduleStarts[0];
-            }
-
-            $scope.scheduleChanged();
-        });
-
         $scope.statsByUserId = function() {
             var allStats = {};
             var statsAry = [];
@@ -85,8 +44,8 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 }
                 v.vpos = vpos;
                 var diffDays = VersesDirect.dateDiffInDays728($scope.scheduleStartDate, new Date(v.dateRead));
-                var dayOnly = $scope.GetDateInt(v.dateRead);
-                var rbd = readersByDate[dayOnly] || {date: $scope.GetDateOnly(v.dateRead), vcount : 0, pcount: 0, uids:{}};
+                var dayOnly = VersesDirect.getDateInt(v.dateRead);
+                var rbd = readersByDate[dayOnly] || {date: VersesDirect.getDateOnly(v.dateRead), vcount : 0, pcount: 0, uids:{}};
                 rbd.vcount++;
                 if ((rbd.uids[v.user._id] || null) === null) {
                     rbd.uids[v.user._id] = 1;
@@ -152,5 +111,37 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             return true;
         };
 
-	}
+        $scope.scheduleChanged = function() {
+            $scope.VersesInSchedule = {};
+            if ( ($scope.scheduleStartSel || null) === null) return;
+            if ( ($scope.scheduleStartSel.Days || null) === null) return;
+            var start = Math.floor($scope.scheduleStartSel.Days/7/13)*13;
+            var curSchedule = [];
+            var sch = $scope.fullSchedule.schedule;
+            for (var i = 0; i < 13; i++) {
+                var schLine = sch[start + i];
+                for (var j = 1; j < schLine.length; j++){
+                    var title = schLine[j];
+                    $scope.VersesInSchedule[title] = $scope.fullSchedule.verses[title];
+                }
+                curSchedule.push(schLine);
+            }
+            $scope.curSchedule = curSchedule;
+            $scope.emailChanged();
+        };
+
+        VersesDirect.scheduleDctf(function(res){
+            $scope.fullSchedule = res.fullSchedule;
+            $scope.scheduleStartDate = res.scheduleStartDate;
+
+            var scheduleStarts = res.scheduleStarts;
+            $scope.scheduleStarts = scheduleStarts;
+            if (scheduleStarts.length > 0) {
+                $scope.scheduleStartSel = scheduleStarts[0];
+            }
+
+            $scope.scheduleChanged();
+        });
+
+    }
 ]);

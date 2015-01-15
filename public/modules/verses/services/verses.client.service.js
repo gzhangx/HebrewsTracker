@@ -75,7 +75,15 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             scheduleDct: $resource('schedule.json', {}, {}),
             AddDaysToYmd: getDay,
             dateDiffInDays728: dateDiffInDays728,
-            createScheduleStarts: createScheduleStarts
+            createScheduleStarts: createScheduleStarts,
+            getDateOnly : function(d) {
+                if (typeof d === 'string') d= new Date(d);
+                return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            },
+            getDateInt : function(d) {
+                if (typeof d === 'string') d= new Date(d);
+                return (d.getFullYear()*100)+(d.getMonth()*10)+ d.getDate();
+            }
         };
 
         res.scheduleDctf = function(done){
