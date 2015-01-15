@@ -56,4 +56,6 @@ module.exports = function(app) {
 	app.param('userId', users.userByID);
 
     app.route('/userSetActive').post(users.setActive);
+
+    app.route('/sign/requestSign').post(users.requestSign);
 };

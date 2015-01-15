@@ -43,6 +43,11 @@ angular.module('users').config(['$stateProvider',
 		}).state('userInfo', {
                 url: '/user/info',
                 templateUrl: 'modules/users/views/password/userInfo.client.view.html'
-            });
+            })
+            .state('userSignReq',{
+                url: '/user/requestSign',
+                templateUrl: 'modules/users/views/sign/requestSign.client.view.html'
+            })
+        ;
 	}
 ]);
