@@ -94,7 +94,7 @@ angular.module('verses').factory('VersesDirect', ['$resource',
 
             if (scheduleStarts.length > 0) {
                 res.selectedSchedule = scheduleStarts[0];
-                res.setCurSchedule(res.selectedSchedule.ScheduleStartDay);
+                //res.setCurSchedule(res.selectedSchedule.ScheduleStartDay);
             }
         };
 
@@ -106,6 +106,7 @@ angular.module('verses').factory('VersesDirect', ['$resource',
         res.setSchedule = function(schedule, done) {
             if (schedule !== null) {
                 res.selectedSchedule = schedule;
+                res.setCurSchedule(res.selectedSchedule.ScheduleStartDay);
                 res.statsByUserId(res.selectedSchedule.DaysPassed);
             }
             done(res);

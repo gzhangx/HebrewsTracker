@@ -27,19 +27,17 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.recordedHash = {};
         };
 
-        $scope.statsByUserId = function() {
-            VersesDirect.statsByUserId($scope.scheduleStartSel.DaysPassed);
-            $scope.recordedHash = VersesDirect.recordedHash;
+        function setScope(){
+            $scope.curSchedule = VersesDirect.curSchedule;
             $scope.allStats = VersesDirect.allStats;
+            $scope.recordedHash = VersesDirect.recordedHash;
             datashare.readersByDate = VersesDirect.readersByDate;
-        };
-
+        }
         $scope.emailChanged = function() {
             $scope.resetAll();
             //if ($scope.hasAuth === false) return;
-            VersesDirect.getUserVerses($scope.email, function(res){
-                $scope.verses = res.verses;
-                $scope.statsByUserId();
+            VersesDirect.setEmail($scope.email, function(){
+                setScope();
             });
             return true;
         };
@@ -48,10 +46,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.VersesInSchedule = {};
             if ( ($scope.scheduleStartSel || null) === null) return;
             if ( ($scope.scheduleStartSel.ScheduleStartDay || null) === null) return;
-            VersesDirect.setCurSchedule($scope.scheduleStartSel.ScheduleStartDay);
-            $scope.VersesInSchedule = VersesDirect.VersesInSchedule;
-            $scope.curSchedule = VersesDirect.curSchedule;
-            $scope.emailChanged();
+            VersesDirect.setSchedule($scope.scheduleStartSel, setScope);
         };
 
         VersesDirect.scheduleDctf($scope.email, function(res){
@@ -61,10 +56,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 $scope.scheduleStartSel = scheduleStarts[0];
             }
 
-            $scope.curSchedule = VersesDirect.curSchedule;
-            $scope.allStats = VersesDirect.allStats;
-            $scope.recordedHash = VersesDirect.recordedHash;
-            datashare.readersByDate = VersesDirect.readersByDate;
+            setScope();
         });
 
     }
