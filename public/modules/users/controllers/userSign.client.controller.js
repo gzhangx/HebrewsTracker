@@ -21,7 +21,9 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
             }
         });
 
-        $scope.scheduleChanged = function() {};
+        $scope.scheduleChanged = function() {
+            VersesDirect.setSchedule($scope.scheduleStartSel);
+        };
         $scope.RequestSign = function(){
 
         };

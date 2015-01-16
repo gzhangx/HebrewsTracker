@@ -109,7 +109,7 @@ angular.module('verses').factory('VersesDirect', ['$resource',
                 res.setCurSchedule(res.selectedSchedule.ScheduleStartDay);
                 res.statsByUserId(res.selectedSchedule.DaysPassed);
             }
-            done(res);
+            if (done) done(res);
         };
 
         res.scheduleDctf = function(email, done){
