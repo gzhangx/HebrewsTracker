@@ -19,20 +19,8 @@
         </form>
 
     </div>
-    <style type="text/css">
-        .green {
-            color: white;
-            background: green;
-        }
-        .late {
-            color: red;
-            background: gray;
-        }
-    </style>
+    <div data-ng-include="'modules/verses/views/versesInfo.client.style.html'"></div>
 	<div >
-        <style>
-            td { padding-left: 3px}
-        </style>
         <table cellpadding="10" cellspacing="10">
 		<tr class="row" data-ng-repeat="schLine in curSchedule">
             <td class="{{recordedHash[sch].cls}}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch].tip}}">{{sch}} {{recordedHash[sch].dateRead}}</td>
