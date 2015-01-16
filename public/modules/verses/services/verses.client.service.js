@@ -98,26 +98,31 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             }
         };
 
-        res.scheduleDctf = function(done, email){
-            function endGetSchedule(){
-                res.getUserVerses(email, function(res){
-                    if (res.selectedSchedule !== null) {
-                        res.statsByUserId(res.selectedSchedule.DaysPassed);
-                    }
-                    done(res);
-                });
+        res.setEmail = function(email, done) {
+            res.getUserVerses(email, function(res){
+                res.setSchedule(res.selectedSchedule, done);
+            });
+        };
+        res.setSchedule = function(schedule, done) {
+            if (schedule !== null) {
+                res.selectedSchedule = schedule;
+                res.statsByUserId(res.selectedSchedule.DaysPassed);
             }
+            done(res);
+        };
+
+        res.scheduleDctf = function(email, done){
             if (res.fullSchedule === null) {
                 $resource('schedule.json', {}, {}).get(function(sch){
                     var startDate = new Date(sch.startDate.y, sch.startDate.m, sch.startDate.d);
                     res.fullSchedule = sch;
                     res.scheduleStartDate = startDate;
                     res.createScheduleStarts(new Date());
-                    endGetSchedule();
+                    res.setEmail(email, done);
                 });
             } else {
                 res.createScheduleStarts(new Date());
-                endGetSchedule();
+                res.setEmail(email, done);
             }
         };
 

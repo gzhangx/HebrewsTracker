@@ -54,7 +54,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.emailChanged();
         };
 
-        VersesDirect.scheduleDctf(function(res){
+        VersesDirect.scheduleDctf($scope.email, function(res){
             var scheduleStarts = res.scheduleStarts;
             $scope.scheduleStarts = scheduleStarts;
             if (scheduleStarts.length > 0) {
@@ -65,7 +65,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.allStats = VersesDirect.allStats;
             $scope.recordedHash = VersesDirect.recordedHash;
             datashare.readersByDate = VersesDirect.readersByDate;
-        }, $scope.email);
+        });
 
     }
 ]);
