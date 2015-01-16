@@ -10,10 +10,14 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
         $scope.scheduleStartSel ={};
         $scope.allStats = [];
 
-        VersesDirect.scheduleDctf($scope.authentication.user.email, function(){
+        function setScope() {
             $scope.curSchedule = VersesDirect.curSchedule;
             $scope.allStats = VersesDirect.allStats;
             $scope.recordedHash = VersesDirect.recordedHash;
+            $scope.scheduleStarts = VersesDirect.scheduleStarts;
+        }
+        VersesDirect.scheduleDctf($scope.authentication.user.email, function(){
+            setScope();
             var scheduleStarts = VersesDirect.scheduleStarts;
             $scope.scheduleStarts = scheduleStarts;
             if (scheduleStarts.length > 0) {
@@ -23,6 +27,7 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
 
         $scope.scheduleChanged = function() {
             VersesDirect.setSchedule($scope.scheduleStartSel);
+            setScope();
         };
         $scope.RequestSign = function(){
 

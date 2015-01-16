@@ -22,6 +22,17 @@
                     </div>
                 </form>
             </div>
+            <div >
+                <style>
+                    td { padding-left: 3px}
+                </style>
+                <table cellpadding="10" cellspacing="10">
+                    <tr class="row" data-ng-repeat="schLine in curSchedule">
+                        <td class="{{recordedHash[sch].cls}}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch].tip}}">{{sch}} {{recordedHash[sch].dateRead}}</td>
+
+                    </tr>
+                </table>
+            </div>
         </tab>
     </tabset>
 </div>
