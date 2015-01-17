@@ -17,17 +17,15 @@ var SignRequestSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    Range: {
+    Desc: {
         type: String,
         default: '',
         trim: true,
-        required: 'Range cannot be blank'
+        required: 'Description cannot be blank'
     },
-    PeriodStart :{
-        type: Number
-    },
-    PeriodEnd :{
-        type: Number
+    ScheduleStartDay :{
+        type: Number,
+        required:'Start Period Required'
     },
     SignedBy : {
         type: Schema.ObjectId,

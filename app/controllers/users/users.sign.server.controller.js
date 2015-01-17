@@ -25,7 +25,7 @@ exports.requestSign = function(req, res) {
       console.log('TODO: sending sign req email');
     };
     if (user) {
-        SignRequest.findOne({range: req.body.range, user:{_id: req.user.id}}, function(err, signReq){
+        SignRequest.findOne({ScheduleStartDay: req.body.ScheduleStartDay, user:{_id: req.user.id}}, function(err, signReq){
            if ( (err || null) !== null)  {
                console.log('error fing sign ' + err);
                return res.status(400).send({
