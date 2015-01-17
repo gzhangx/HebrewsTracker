@@ -23,15 +23,17 @@ exports.requestSign = function(req, res) {
 
     var doEmail = function(sreq) {
       console.log('TODO: sending sign req email');
+        return res.jsonp({message:'Request sent'});
     };
     if (user) {
-        SignRequest.findOne({ScheduleStartDay: req.body.ScheduleStartDay, user:{_id: req.user.id}}, function(err, signReq){
+        SignRequest.findOne({ScheduleStartDay: req.body.ScheduleStartDay, user:{_id: req.user._id}}, function(err, signReq){
            if ( (err || null) !== null)  {
-               console.log('error fing sign ' + err);
+               console.log('error find sign ' + err+ ' user='+req.user);
                return res.status(400).send({
                    message: errorHandler.getErrorMessage(err)
                });
            } else {
+               console.log('signReq found is ' + signReq);
                if ( (signReq || null) === null) {
                    signReq = new SignRequest(req.body);
                    signReq.created = new Date();

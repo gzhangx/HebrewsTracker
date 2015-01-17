@@ -66,6 +66,7 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             qryDct: $resource('versesQry/:email', {email:'@email'}, {}),
             qryAll: $resource('versesQryAll', {}, {}),
             scheduleDct: $resource('schedule.json', {}, {}),
+            signReq : $resource('/sign/requestSign', {}, {}),
             AddDaysToYmd: getDay,
             dateDiffInDays728: dateDiffInDays728,
             getDateOnly : function(d) {
