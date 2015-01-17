@@ -17,6 +17,10 @@ var SignRequestSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    updated: {
+        type: Date,
+        default: Date.now
+    },
     Desc: {
         type: String,
         default: '',

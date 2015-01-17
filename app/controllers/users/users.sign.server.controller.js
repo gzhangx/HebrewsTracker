@@ -38,6 +38,7 @@ exports.requestSign = function(req, res) {
                    signReq = new SignRequest(req.body);
                    signReq.created = new Date();
                    signReq.ip = req.ip;
+                   signReq.user = req.user;
                    signReq.save(function(err) {
                        if (err) {
                            return res.status(400).send({
@@ -48,6 +49,8 @@ exports.requestSign = function(req, res) {
                        }
                    });
                }else {
+                   signReq.updated = new Date();
+                   signReq.save();
                    doEmail(signReq);
                }
            }
