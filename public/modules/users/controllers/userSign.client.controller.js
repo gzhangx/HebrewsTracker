@@ -4,6 +4,7 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
 	function($scope, Authentication, VersesDirect) {
 		$scope.authentication = Authentication;
 
+        $scope.email = null;
         $scope.recordedHash = {};
         $scope.curSchedule = [];
         $scope.scheduleStarts = [];
@@ -31,6 +32,7 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
         };
         $scope.RequestSign = function(){
             var sign = new VersesDirect.signReq($scope.scheduleStartSel);
+            sign.email = this.email;
             sign.$save(function(response) {
                 $scope.message = response.message;
             }, function(errorResponse) {
