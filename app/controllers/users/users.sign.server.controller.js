@@ -17,10 +17,12 @@ var config = require('../../../config/config'),
     nodemailer = require('nodemailer'),
     async = require('async');
 
+var ObjectId = mongoose.Types.ObjectId;
+
 var smtpTransport = nodemailer.createTransport(config.mailer.options);
 
 /**
- * Update user details
+ * Request Sign
  */
 exports.requestSign = function(req, res) {
     // Init Variables
@@ -32,7 +34,7 @@ exports.requestSign = function(req, res) {
       console.log('TODO: sending sign req email ' + sreq.user);
         async.waterfall([
                 function(done) {
-                    User.findOne({roles:'admin'}, function(err, usr){
+                    User.findOne({roles:'lead'}, function(err, usr){
                        console.log('requestSign, team lead '+ usr+ ' ' + err);
                         if (err) return done(err);
                         if (usr) {
@@ -143,4 +145,48 @@ exports.requestSign = function(req, res) {
         });
     }else
         doRequestSign(user);
+};
+
+
+exports.signRequest = function(req, res) {
+    var usr = req.user || null;
+    if (usr === null) {
+        return res.status(400).send({ message: 'Unauthorized'});
+    }
+    if (usr.roles.indexOf('lead') < 0)return res.status(400).send({ message: 'Unauthorized role'});
+    var ids = [];
+    for (var i in req.body.ids) {
+        ids[i] = new ObjectId(req.body.ids[i]);
+    }
+    SignRequest.find({_id:  {$in: ids}, SignedBy: null}, function(err, reqs){
+        var ret = [];
+        async.waterfall(ids.map(function(itm){
+            console.log('signing ' + itm);
+            return function(lastResult, done) {
+              if ((lastResult || null) === null) lastResult = [];
+              SignRequest.find({_id: itm}, function(err, sreq){
+                  if (err) return done(err, lastResult);
+                  itm.SignedBy = usr;
+                  itm.save(function(err) {
+                     if (err) {
+                         console.log('error save sign ' + err+' for ' + itm.user);
+                         return done(err, lastResult);
+                     }
+                      lastResult.pushback(itm);
+                      done(err, lastResult);
+                  });
+              });
+              done(null, lastResult);
+            };
+        }),
+        function(err, result){
+            if (err) {
+                console.log('sign eror ' + err);
+            }
+            return res.send({
+                err: err,
+                result: result
+            });
+        });
+    });
 };
