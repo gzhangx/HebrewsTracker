@@ -13,6 +13,12 @@ var _ = require('lodash'),
     User = mongoose.model('User'),
     SignRequest = mongoose.model('SignRequest');
 
+var config = require('../../../config/config'),
+    nodemailer = require('nodemailer'),
+    async = require('async');
+
+var smtpTransport = nodemailer.createTransport(config.mailer.options);
+
 /**
  * Update user details
  */
@@ -22,8 +28,58 @@ exports.requestSign = function(req, res) {
     var message = null;
 
     var doEmail = function(sreq) {
-      console.log('TODO: sending sign req email');
-        return res.jsonp({message:'Request sent'});
+        user = sreq.user;
+      console.log('TODO: sending sign req email ' + sreq.user);
+        async.waterfall([
+                function(done) {
+                    User.findOne({roles:'admin'}, function(err, usr){
+                       console.log('requestSign, team lead '+ usr+ ' ' + err);
+                        if (err) return done(err);
+                        if (usr) {
+                            done(err, usr);
+                        }
+                    });
+                },
+                function(usr, done) {
+                    res.render('templates/request-sign-email', {
+                        name: user.displayName,
+                        appName: config.app.title,
+                        url: 'http://' + req.headers.host + '/sign/Sign/' +sreq._id
+                    }, function(err, emailHTML) {
+                        done(err, emailHTML, usr);
+                    });
+                },
+                function(emailHTML, user, done) {
+                    var mailOptions = {
+                        to: user.email,
+                        from: config.mailer.from,
+                        subject: 'Request Sign',
+                        html: emailHTML
+                    };
+                    smtpTransport.sendMail(mailOptions, function(err) {
+                        console.log('send req email to ' + user.email+ ' ' + err);
+                        if (!err) {
+                            res.send({
+                                message: 'An email has been sent to ' + user.email + ' with further instructions.'
+                            });
+                        } else {
+                            return res.status(400).send({
+                                message: 'Failure sending email'
+                            });
+                        }
+
+                        done(err);
+                    });
+                }
+            ],function(err){
+                if (err !== null) {
+                    console.log('requestSign err ' + err);
+                    return res.jsonp({error: 'Error Send Email', err : err});
+                }
+                return res.jsonp({message:'Request sent'});
+            }
+        );
+
     };
 
 
