@@ -208,7 +208,7 @@ exports.listSignRequests = function(req, res) {
             console.log('Sign request error ' + err);
             return res.json({error: err});
         }
-        console.log('Sign request done ' + reqs);
+        //console.log('Sign request done ' + reqs);
         if (isAdmin) return res.json(reqs);
         var ret = [];
         for (var i in reqs) {
