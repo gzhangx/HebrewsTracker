@@ -13,8 +13,8 @@ angular.module('verses').factory('Verses', ['$resource',
 	}
 ]);
 
-angular.module('verses').factory('VersesDirect', ['$resource',
-    function($resource) {
+angular.module('verses').factory('VersesDirect', ['$resource','$http',
+    function($resource, $http) {
         var _MS_PER_DAY = 1000 * 60 * 60 * 24;
         var _MS_PER_HALFDAY = _MS_PER_DAY/2;
 
@@ -67,6 +67,7 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             qryAll: $resource('versesQryAll', {}, {}),
             scheduleDct: $resource('schedule.json', {}, {}),
             signReq : $resource('/sign/requestSign', {}, {}),
+            signList : function(dta){return $http.post('/sign/list', dta);},
             AddDaysToYmd: getDay,
             dateDiffInDays728: dateDiffInDays728,
             getDateOnly : function(d) {
@@ -105,12 +106,18 @@ angular.module('verses').factory('VersesDirect', ['$resource',
             });
         };
         res.setSchedule = function(schedule, done) {
+            function doDone(xx){
+                if (done) done(res);
+            }
             if (schedule !== null) {
                 res.selectedSchedule = schedule;
                 res.setCurSchedule(res.selectedSchedule.ScheduleStartDay);
                 res.statsByUserId(res.selectedSchedule.DaysPassed);
+                res.signList({ScheduleStartDay: schedule.ScheduleStartDay}).success(doDone).error(doDone);
+                return;
             }
-            if (done) done(res);
+
+            doDone();
         };
 
         res.scheduleDctf = function(email, done){

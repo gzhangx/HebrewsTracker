@@ -59,4 +59,5 @@ module.exports = function(app) {
 
     app.route('/sign/requestSign').post(users.requestSign);
     app.route('/sign/signRequest').post(users.signRequest);
+    app.route('/sign/list').post(users.listSignRequests);
 };

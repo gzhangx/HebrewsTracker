@@ -190,3 +190,35 @@ exports.signRequest = function(req, res) {
         });
     });
 };
+
+
+exports.listSignRequests = function(req, res) {
+    var usr = req.user || null;
+    var isAdmin = false;
+    if (usr !== null && usr.roles !== null) {
+        isAdmin = usr.roles.indexOf('lead') > 0 || usr.roles.indexOf('admin') > 0;
+    }
+
+    var signedBy = null;
+    if (req.body.signedBy) signedBy = new ObjectId(req.body.signedBy);
+    var qry = {ScheduleStartDay: req.body.ScheduleStartDay, SignedBy: signedBy};
+
+    SignRequest.find(qry, function(err, reqs){
+        if (err) {
+            console.log('Sign request error ' + err);
+            return res.json({error: err});
+        }
+        console.log('Sign request done ' + reqs);
+        if (isAdmin) return res.json(reqs);
+        var ret = [];
+        for (var i in reqs) {
+            var reqsi = reqs[i];
+            ret.push({
+                ScheduleStartDay: reqsi.ScheduleStartDay,
+                user: reqsi.user,
+                SignedBy: reqsi.SignedBy? {_id: reqsi.SignedBy.user, displayName : reqsi.SignedBy.displayName}: null
+            });
+        }
+        return res.json(ret);
+    });
+};
