@@ -58,4 +58,5 @@ module.exports = function(app) {
     app.route('/userSetActive').post(users.setActive);
 
     app.route('/sign/requestSign').post(users.requestSign);
+    app.route('/sign/signRequest').post(users.signRequest);
 };
