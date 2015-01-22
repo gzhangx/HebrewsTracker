@@ -9,7 +9,7 @@
                     </div>
                     <div class="form-group">
                         <label for="userid">Userid</label>
-                        <label id="userid" name="userid" class="form-control" data-ng-bind="userInfo.userId" placeholder="userid">
+                        <label id="userid" name="userid" class="form-control" data-ng-bind="userInfo._id" placeholder="userid" />
                     </div>
                     <div class="form-group">
                         <label for="username">Username</label>
@@ -21,18 +21,20 @@
                     </div>
                     <div class="checkbox">
                         <label class="text-uppercase text-warning">
-                            <input type="checkbox" id="inActive" name="inActive" data-ng-model="userInfo.inActive"><strong> Deactivate This Account</strong>
-                        </label>
-                    </div>
-                    <div class="checkbox">
-                        <label class="text-uppercase text-warning">
-                            <input type="checkbox" id="admin" name="admin" data-ng-model="userInfo.setAdmin"><strong> Promote To Admin Role</strong>
+                            <ul>
+                                <li ng-repeat="role in roles">
+                                    <label>
+                                        <input type="checkbox" ng-model="role.checked">
+                                        {{role.name}}
+                                    </label>
+                                </li>
+                            </ul>
                         </label>
                     </div>
                     <br/>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-large btn-danger" data-ng-click="userInfo.resetActive=true">Save Changes</button>
-                        <button type="submit" class="btn btn-large btn-primary pull-right" data-ng-click="userInfo.resetActive = false">Search</button>
+                        <button type="submit" class="btn btn-large btn-danger">Save Changes</button>
+                        <button type="submit" class="btn btn-large btn-primary pull-right" data-ng-click="userInfo._id=null">Search</button>
                     </div>
                     <div data-ng-show="error" class="text-center text-danger">
                         <strong>{{error}}</strong>

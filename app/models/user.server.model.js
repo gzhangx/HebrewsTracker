@@ -88,7 +88,11 @@ var UserSchema = new Schema({
 	},
 	resetPasswordExpires: {
 		type: Date
-	}
+	},
+    group : {
+        type: String,
+        trim: true
+    }
 });
 
 /**
