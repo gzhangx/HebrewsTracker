@@ -62,12 +62,13 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
             recordedHash : {},
             allStats : {},
             readersByDate : [],
+            signReqs : [],
             rcdDct : $resource('versesDirect/', {}, {}),
             qryDct: $resource('versesQry/:email', {email:'@email'}, {}),
             qryAll: $resource('versesQryAll', {}, {}),
             scheduleDct: $resource('schedule.json', {}, {}),
             signReq : $resource('/sign/requestSign', {}, {}),
-            signList : function(dta){return $http.post('/sign/list', dta);},
+            signListFunc : function(dta){return $http.post('/sign/list', dta);},
             AddDaysToYmd: getDay,
             dateDiffInDays728: dateDiffInDays728,
             getDateOnly : function(d) {
@@ -107,13 +108,16 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
         };
         res.setSchedule = function(schedule, done) {
             function doDone(xx){
+                res.signReqs = xx;
                 if (done) done(res);
             }
             if (schedule !== null) {
                 res.selectedSchedule = schedule;
                 res.setCurSchedule(res.selectedSchedule.ScheduleStartDay);
                 res.statsByUserId(res.selectedSchedule.DaysPassed);
-                res.signList({ScheduleStartDay: schedule.ScheduleStartDay}).success(doDone).error(doDone);
+                res.signListFunc({ScheduleStartDay: schedule.ScheduleStartDay}).success(doDone).error(function(err){
+                    console.log(err);
+                });
                 return;
             }
 
