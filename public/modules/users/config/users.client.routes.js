@@ -48,6 +48,10 @@ angular.module('users').config(['$stateProvider',
                 url: '/user/requestSign',
                 templateUrl: 'modules/users/views/sign/requestSign.client.view.html'
             })
+            .state('SignUserReq',{
+                url: '/user/signRequest',
+                templateUrl: 'modules/users/views/sign/signRequest.client.view.html'
+            })
         ;
 	}
 ]);

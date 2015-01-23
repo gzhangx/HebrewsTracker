@@ -203,11 +203,16 @@ exports.listSignRequests = function(req, res) {
         isAdmin = usr.roles.indexOf('lead') > 0 || usr.roles.indexOf('admin') > 0;
     }
 
-    var signedBy = null;
-    if (req.body.signedBy) signedBy = new ObjectId(req.body.signedBy);
-    var qry = {ScheduleStartDay: req.body.ScheduleStartDay, SignedBy: signedBy};
+    //var signedBy = null;
+    //if (req.body.signedBy) signedBy = new ObjectId(req.body.signedBy);
+    var qry = {ScheduleStartDay: req.body.ScheduleStartDay, SignedBy: null};
 
-    SignRequest.find(qry, function(err, reqs){
+    delete qry.SignedBy;
+
+    var srqry = SignRequest.find(qry);
+    var populateUserFields = 'email firstName lastName displayName';
+    if (isAdmin) srqry.populate('user',populateUserFields).populate('SignedBy', populateUserFields);
+    srqry.exec(function(err, reqs){
         if (err) {
             console.log('Sign request error ' + err);
             return res.json({error: err});
