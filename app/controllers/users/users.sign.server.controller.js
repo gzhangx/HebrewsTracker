@@ -76,9 +76,13 @@ exports.requestSign = function(req, res) {
             ],function(err){
                 if (err !== null) {
                     console.log('requestSign err ' + err);
+                    try {
                     return res.jsonp({error: 'Error Send Email', err : err});
+                    } catch (exc) {
+                        console.log('exception send user sign ' + exc);
+                    }
                 }
-                return res.jsonp({message:'Request sent'});
+                //return res.jsonp({message:'Request sent'});
             }
         );
 
