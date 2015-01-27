@@ -32,12 +32,11 @@ angular.module('users').controller('SignRequestController', ['$scope', 'Authenti
             VersesDirect.setSchedule($scope.scheduleStartSel);
             setScope();
         };
-        $scope.RequestSign = function(){
-            var sign = new VersesDirect.signReq($scope.scheduleStartSel);
-            sign.email = this.email;
-            sign.$save(function(response) {
+        $scope.SignRequest = function(){
+            var ids = $scope.signReqs.filter(function(x){return x.checked;}).map(function(x){ return x._id;});
+            var sign = new VersesDirect.lSignReqFunc({ids: ids}).success(function(response) {
                 $scope.message = response.message;
-            }, function(errorResponse) {
+            }).error(function(errorResponse) {
                 $scope.error = errorResponse.message;
             });
         };

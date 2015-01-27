@@ -1,6 +1,6 @@
 <div data-ng-controller="SignRequestController">
             <div class="block row">
-                <form data-ng-submit="Signrequest()" method="post" class="form-horizontal col-xs-4">
+                <form data-ng-submit="SignRequest()" method="post" class="form-horizontal col-xs-4">
                     <div class="form-group">
                         <label for="speriod">Period</label>
                         <select id="speriod" data-ng-options="sday.Desc for sday in scheduleStarts" data-ng-change="scheduleChanged()" data-ng-model="scheduleStartSel"  class="form-control" ></select>

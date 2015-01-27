@@ -12,7 +12,7 @@ angular.module('users').controller('UserInfoController', ['$scope', '$stateParam
             $scope.success = $scope.error = null;
             var userInfo = this.userInfo;
             if (userInfo._id) {
-                userInfo.roles = this.roles.filter(function(itm){return itm.checked === true}).map(function(itm){return itm.name;});
+                userInfo.roles = this.roles.filter(function(itm){return itm.checked === true;}).map(function(itm){return itm.name;});
             }
             $http.post('/userSetActive', $scope.userInfo).success(function(response) {
                 $scope.message = 'found ' + response.email + ' ' + response.message;

@@ -31,7 +31,7 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
             setScope();
         };
         $scope.RequestSign = function(){
-            var sign = new VersesDirect.signReq($scope.scheduleStartSel);
+            var sign = new VersesDirect.uReqSign($scope.scheduleStartSel);
             sign.email = this.email;
             sign.$save(function(response) {
                 $scope.message = response.message;

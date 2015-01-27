@@ -163,24 +163,26 @@ exports.signRequest = function(req, res) {
         ids[i] = new ObjectId(req.body.ids[i]);
     }
     SignRequest.find({_id:  {$in: ids}, SignedBy: null}, function(err, reqs){
-        var ret = [];
         async.waterfall(ids.map(function(itm){
             console.log('signing ' + itm);
             return function(lastResult, done) {
-              if ((lastResult || null) === null) lastResult = [];
-              SignRequest.find({_id: itm}, function(err, sreq){
+                if (!done) {
+                    done = lastResult;
+                    lastResult = [];
+                }
+              SignRequest.findById(itm).populate('user','displayName').exec(function(err, sreq){
                   if (err) return done(err, lastResult);
-                  itm.SignedBy = usr;
-                  itm.save(function(err) {
+                  sreq.SignedBy = usr;
+                  sreq.save(function(err) {
                      if (err) {
                          console.log('error save sign ' + err+' for ' + itm.user);
                          return done(err, lastResult);
                      }
-                      lastResult.pushback(itm);
-                      done(err, lastResult);
+                      lastResult.push(sreq.toObject());
+                      if (done) done(err, lastResult);
                   });
               });
-              done(null, lastResult);
+              //if (done) done(null, lastResult);
             };
         }),
         function(err, result){
