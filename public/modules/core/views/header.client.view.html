@@ -54,6 +54,9 @@
                     <li>
                         <a href="/#!/user/requestSign">Request Sign</a>
                     </li>
+                    <li data-ng-show="authentication.user.roles.indexOf('lead') >= 0">
+                        <a href="/#!/user/signRequest">Sign Requests</a>
+                    </li>
                     <li class="divider"></li>
 					<li>
 						<a href="/auth/signout">Signout</a>

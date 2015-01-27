@@ -18,6 +18,9 @@ angular.module('users').controller('SignRequestController', ['$scope', 'Authenti
             $scope.recordedHash = VersesDirect.recordedHash;
             $scope.scheduleStarts = VersesDirect.scheduleStarts;
             $scope.signReqs = VersesDirect.signReqs;
+            for (var i in $scope.signReqs) {
+                if ( $scope.signReqs[i].SignedBy)$scope.signReqs[i].checked = true;
+            }
         }
         VersesDirect.scheduleDctf($scope.authentication.user.email, function(){
             setScope();

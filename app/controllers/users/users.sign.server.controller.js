@@ -170,7 +170,7 @@ exports.signRequest = function(req, res) {
                     done = lastResult;
                     lastResult = [];
                 }
-              SignRequest.findById(itm).populate('user','displayName').exec(function(err, sreq){
+              SignRequest.findById(itm).populate('user','displayName email').exec(function(err, sreq){
                   if (err) return done(err, lastResult);
                   sreq.SignedBy = usr;
                   sreq.save(function(err) {
