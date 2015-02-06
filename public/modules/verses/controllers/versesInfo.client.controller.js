@@ -49,7 +49,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             VersesDirect.setSchedule($scope.scheduleStartSel, setScope);
         };
 
-        VersesDirect.scheduleDctf($scope.email, function(res){
+        VersesDirect.scheduleDctf($scope.email, function(err, res){
             var scheduleStarts = res.scheduleStarts;
             $scope.scheduleStarts = scheduleStarts;
             if (scheduleStarts.length > 0) {
