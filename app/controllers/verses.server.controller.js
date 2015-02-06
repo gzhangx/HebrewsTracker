@@ -203,6 +203,7 @@ exports.list = function(req, res) {
                     var cverses = [];
                     for (var i = 0; i < verses.length; i++){
                         var v =verses[i];
+                        if (v.user === null) continue;
                         if (v.user.id !== curId){
                             cverses.push({title: v.title, group: v.group,user :{_id: v.user.id}, dateRead: v.dateRead});
                         }else cverses.push(v);
