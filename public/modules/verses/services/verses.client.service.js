@@ -184,13 +184,15 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
                 v.vpos.diff = diffDays - vpos.pos;
                 stat = allStats[v.user._id] || null;
                 if (stat === null) {
-                    stat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate, lates : 0, latesByDay : {}};
+                    stat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate, lates : 0, latesByDay : {}, dups:{}};
+                    stat.dups[v.title] = 1;
                     if (stat.displayName === null || stat.displayName.trim()==='') {
                         stat.displayName = stat.email || '*********';
                     }
                     allStats[v.user._id] = stat;
                     statsAry.push(stat);
-                }else {
+                }else if (!stat.dups[v.title]){
+                    stat.dups[v.title] = 1;
                     stat.read++;
                 }
                 var dayDsp = res.AddDaysToYmd(new Date(v.dateRead), 0);
