@@ -215,8 +215,9 @@ exports.listSignRequests = function(req, res) {
     delete qry.SignedBy;
 
     var srqry = SignRequest.find(qry);
-    var populateUserFields = 'email firstName lastName displayName';
-    if (isAdmin) srqry.populate('user',populateUserFields).populate('SignedBy', populateUserFields);
+    var populateUserFields = 'email firstName lastName displayName group';
+    if (!isAdmin) populateUserFields = 'SignedBy';
+    srqry.populate('user',populateUserFields).populate('SignedBy', populateUserFields);
     srqry.exec(function(err, reqs){
         if (err) {
             console.log('Sign request error ' + err);
@@ -230,7 +231,7 @@ exports.listSignRequests = function(req, res) {
             ret.push({
                 ScheduleStartDay: reqsi.ScheduleStartDay,
                 user: reqsi.user,
-                SignedBy: reqsi.SignedBy? {_id: reqsi.SignedBy.user, displayName : reqsi.SignedBy.displayName}: null
+                SignedBy: reqsi.SignedBy? {_id: reqsi.SignedBy._id, displayName : reqsi.SignedBy.displayName}: null
             });
         }
         return res.json(ret);
