@@ -12,7 +12,7 @@ angular.module('users').controller('SignRequestController', ['$scope', 'Authenti
         $scope.allStats = [];
         $scope.signList = [];
 
-        function setScope() {
+        function setScope(err) {
             $scope.curSchedule = VersesDirect.curSchedule;
             $scope.allStats = VersesDirect.allStats;
             $scope.recordedHash = VersesDirect.recordedHash;
@@ -32,8 +32,7 @@ angular.module('users').controller('SignRequestController', ['$scope', 'Authenti
         });
 
         $scope.scheduleChanged = function() {
-            VersesDirect.setSchedule($scope.scheduleStartSel);
-            setScope();
+            VersesDirect.setSchedule($scope.scheduleStartSel,setScope);
         };
         $scope.SignRequest = function(){
             var ids = $scope.signReqs.filter(function(x){return x.checked;}).map(function(x){ return x._id;});

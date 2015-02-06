@@ -11,7 +11,7 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
         $scope.scheduleStartSel ={};
         $scope.allStats = [];
 
-        function setScope() {
+        function setScope(err) {
             $scope.curSchedule = VersesDirect.curSchedule;
             $scope.allStats = VersesDirect.allStats;
             $scope.recordedHash = VersesDirect.recordedHash;
@@ -27,8 +27,7 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
         });
 
         $scope.scheduleChanged = function() {
-            VersesDirect.setSchedule($scope.scheduleStartSel);
-            setScope();
+            VersesDirect.setSchedule($scope.scheduleStartSel, setScope);
         };
         $scope.RequestSign = function(){
             var sign = new VersesDirect.uReqSign($scope.scheduleStartSel);

@@ -110,7 +110,7 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
         res.setSchedule = function(schedule, done) {
             function doDone(xx){
                 res.signReqs = xx;
-                if (done) done(res);
+                if (done) done(null, res);
             }
             if (schedule !== null) {
                 res.selectedSchedule = schedule;
@@ -118,6 +118,7 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
                 res.statsByUserId(res.selectedSchedule.DaysPassed);
                 res.signListFunc({ScheduleStartDay: schedule.ScheduleStartDay}).success(doDone).error(function(err){
                     console.log(err);
+                    done(err);
                 });
                 return;
             }
