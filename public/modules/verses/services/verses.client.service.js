@@ -110,12 +110,12 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
         res.setSchedule = function(schedule, done) {
             function doDone(xx){
                 res.signReqs = xx;
+                if (schedule != null) res.statsByUserId(res.selectedSchedule.DaysPassed);
                 if (done) done(null, res);
             }
             if (schedule !== null) {
                 res.selectedSchedule = schedule;
                 res.setCurSchedule(res.selectedSchedule.ScheduleStartDay);
-                res.statsByUserId(res.selectedSchedule.DaysPassed);
                 res.signListFunc({ScheduleStartDay: schedule.ScheduleStartDay}).success(doDone).error(function(err){
                     console.log(err);
                     done(err);
@@ -185,7 +185,7 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
                 v.vpos.diff = diffDays - vpos.pos;
                 stat = allStats[v.user._id] || null;
                 if (stat === null) {
-                    stat = { user: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate, lates : 0, latesByDay : {}, dups:{}};
+                    stat = { userId: v.user._id, displayName: v.user.displayName || null, email: v.user.email, read: 1, totalToDate: totalVersToDate, lates : 0, latesByDay : {}, dups:{}};
                     stat.dups[v.title] = 1;
                     if (stat.displayName === null || stat.displayName.trim()==='') {
                         stat.displayName = stat.email || '*********';
@@ -207,10 +207,21 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
 
             res.recordedHash = recordedHash;
             statsAry.sort(function(a,b){return b.read - a.read;});
+            var signMap = {};
+            if (res.signReqs) { for (i = 0; i < res.signReqs.length; i++) { signMap[res.signReqs[i].user._id] = res.signReqs[i]; }}
             for(i = 0; i < statsAry.length;i++) {
                 stat = statsAry[i];
                 if (stat.totalToDate !== 0)
                     stat.completePct = Math.round(stat.read*100/stat.totalToDate);
+                var signReq = signMap[stat.userId];
+                if (signReq) {
+                    stat.signStatus = 'Requested';
+                    if (signReq.SignedBy) {
+                        stat.signStatus = 'Signed';
+                        var whoSigned = signReq.SignedBy.displayName || signReq.SignedBy.email;
+                        if (whoSigned) stat.signStatus = 'Signed by ' + whoSigned;
+                    }
+                }
             }
             res.allStats = statsAry;
             var readersByDateAry = [];
