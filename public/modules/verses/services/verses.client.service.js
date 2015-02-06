@@ -110,7 +110,7 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
         res.setSchedule = function(schedule, done) {
             function doDone(xx){
                 res.signReqs = xx;
-                if (schedule != null) res.statsByUserId(res.selectedSchedule.DaysPassed);
+                if (schedule) res.statsByUserId(res.selectedSchedule.DaysPassed);
                 if (done) done(null, res);
             }
             if (schedule !== null) {
