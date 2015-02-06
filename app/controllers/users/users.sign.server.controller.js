@@ -58,9 +58,9 @@ exports.requestSign = function(req, res) {
                         subject: 'Request Sign',
                         html: emailHTML
                     };
-                    console.log('DEBUG: remove the following 3 lines, NO Email sent to '+user.email);
-                    done();
-                    return;
+                    //console.log('DEBUG: remove the following 3 lines, NO Email sent to '+user.email);
+                    //done();
+                    //return;
                     smtpTransport.sendMail(mailOptions, function(err) {
                         console.log('send req email to ' + user.email+ ' ' + err);
                         if (!err) {
