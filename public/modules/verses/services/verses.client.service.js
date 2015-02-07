@@ -208,7 +208,12 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
             res.recordedHash = recordedHash;
             statsAry.sort(function(a,b){return b.read - a.read;});
             var signMap = {};
-            if (res.signReqs) { for (i = 0; i < res.signReqs.length; i++) { signMap[res.signReqs[i].user._id] = res.signReqs[i]; }}
+            if (res.signReqs) {
+                for (i = 0; i < res.signReqs.length; i++) {
+                    var sReqI = res.signReqs[i];
+                    if (sReqI.user) signMap[sReqI.user._id] = sReqI;
+                }
+            }
             for(i = 0; i < statsAry.length;i++) {
                 stat = statsAry[i];
                 if (stat.totalToDate !== 0)
