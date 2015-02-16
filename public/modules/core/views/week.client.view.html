@@ -1,0 +1,9 @@
+<section data-ng-controller="VersesInfoController">
+
+    <table cellpadding="10" cellspacing="10">
+        <tr class="row" data-ng-repeat="week in CurWeekAry">
+            <td  ng-style="{'font-weight': week==CurDay?'bold':'normal'}">{{CurWeekMap[week]}} {{week}}  </td>
+
+        </tr>
+    </table>
+</section>

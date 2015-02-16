@@ -256,7 +256,7 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
                 var isCurWeek = selSch.isCurrentSch && (selSch.CurWeek === i);
                 if (isCurWeek) {
                     res.CurWeekMap = {};
-                    res.CurWeekAry = schLine;
+                    res.CurWeekAry = schLine.slice(1);
                 }
                 for (var j = 1; j < schLine.length; j++){
                     var title = schLine[j];

@@ -30,6 +30,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         function setScope(){
             $scope.curSchedule = VersesDirect.curSchedule;
             $scope.CurWeekMap = VersesDirect.CurWeekMap;
+            $scope.CurWeekAry = VersesDirect.CurWeekAry;
             $scope.CurDay = VersesDirect.CurDay;
             $scope.allStats = VersesDirect.allStats;
             $scope.recordedHash = VersesDirect.recordedHash;

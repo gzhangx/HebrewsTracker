@@ -11,6 +11,9 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 		state('home', {
 			url: '/',
 			templateUrl: 'modules/core/views/home.client.view.html'
-		});
+		}).state('week', {
+                url: '/week',
+                templateUrl: 'modules/core/views/week.client.view.html'
+            });
 	}
 ]);
