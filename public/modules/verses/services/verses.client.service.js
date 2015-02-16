@@ -58,6 +58,8 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
             selectedSchedule: null,
             verses : [],
             curSchedule : [],
+            CurWeek: {},
+            CurDay : null,
             VersesInSchedule: {},
             recordedHash : {},
             allStats : {},
@@ -81,9 +83,13 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
         res.createScheduleStarts = function(curDate) {
             var startDate = res.scheduleStartDate;
             var daysMax = dateDiffInDays(startDate, curDate);
+            var curDay = dateDiffInDays(startDate, new Date());
+            var isCurrentSch = curDay < ((Math.floor(daysMax/7/13) + 1) * 7 *13);
             var maxStart = Math.floor(daysMax/7/13)*13;
             var days = daysMax%728;
             var start = Math.floor(days/7/13)*13;
+
+            curDay = (curDay %728) - (maxStart *7);
 
             var scheduleStarts = [];
             for (var i = 0; i >=-1 ;i--) {
@@ -91,7 +97,10 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
                 scheduleStarts.push({
                     Desc : desc,
                     ScheduleStartDay : (start*7)+ (i*7*13),
-                    DaysPassed: days - (start*7) + 1
+                    DaysPassed: (isCurrentSch && i === 0)?(days - (start*7) + 1):(7*13),
+                    isCurrentSch : isCurrentSch,
+                    CurDay: curDay,
+                    CurWeek: Math.floor(curDay/7)
                 });
             }
             res.scheduleStarts = scheduleStarts;
@@ -239,11 +248,20 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
             var start = Math.floor(scheduleStartDay/7/13)*13;
             var VersesInSchedule = {};
             var curSchedule = [];
+            var selSch = res.selectedSchedule;
             var sch = res.fullSchedule.schedule;
+            var today = new Date();
             for (var i = 0; i < 13; i++) {
                 var schLine = sch[start + i];
+                var isCurWeek = selSch.isCurrentSch && (selSch.CurWeek === i);
+                if (isCurWeek) {
+                    res.CurWeekMap = {};
+                    res.CurWeekAry = schLine;
+                }
                 for (var j = 1; j < schLine.length; j++){
                     var title = schLine[j];
+                    if (isCurWeek) res.CurWeekMap[title] = getDay(today, j - (selSch.CurDay%7) - 1);
+                    if (isCurWeek && (j == (selSch.CurDay%7) + 1)) res.CurDay = title;
                     VersesInSchedule[title] = res.fullSchedule.verses[title];
                 }
                 curSchedule.push(schLine);

@@ -29,6 +29,8 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
 
         function setScope(){
             $scope.curSchedule = VersesDirect.curSchedule;
+            $scope.CurWeekMap = VersesDirect.CurWeekMap;
+            $scope.CurDay = VersesDirect.CurDay;
             $scope.allStats = VersesDirect.allStats;
             $scope.recordedHash = VersesDirect.recordedHash;
             datashare.readersByDate = VersesDirect.readersByDate;
