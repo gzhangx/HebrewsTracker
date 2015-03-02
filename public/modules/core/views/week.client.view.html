@@ -1,8 +1,8 @@
-<section data-ng-controller="VersesInfoController">
+<section data-ng-controller="WeekInfoController">
 
     <table cellpadding="10" cellspacing="10">
         <tr class="row" data-ng-repeat="week in CurWeekAry">
-            <td  ng-style="{'font-weight': week==CurDay?'bold':'normal'}">{{CurWeekMap[week]}} {{week}}  </td>
+            <td  ng-style="{'font-weight': week==CurDay?'bold':'normal'}">{{WeekMap[week].MonthDay}} {{week}}  </td>
 
         </tr>
     </table>
