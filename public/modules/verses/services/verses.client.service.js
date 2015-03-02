@@ -261,7 +261,7 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
                 for (var j = 1; j < schLine.length; j++){
                     var title = schLine[j];
                     if (isCurWeek) res.CurWeekMap[title] = getDay(today, j - (selSch.CurDay%7) - 1);
-                    if (isCurWeek && (j == (selSch.CurDay%7) + 1)) res.CurDay = title;
+                    if (isCurWeek && (j === (selSch.CurDay%7) + 1)) res.CurDay = title;
                     VersesInSchedule[title] = res.fullSchedule.verses[title];
                 }
                 curSchedule.push(schLine);
