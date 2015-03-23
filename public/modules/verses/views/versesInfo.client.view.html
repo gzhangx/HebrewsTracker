@@ -23,7 +23,7 @@
 	<div >
         <table cellpadding="10" cellspacing="10">
 		<tr class="row" data-ng-repeat="schLine in curSchedule">
-            <td class="{{recordedHash[sch][selectedUserId].cls}}" ng-style="{'text-decoration': CurWeekMap[sch]?'underline':'', 'font-weight': sch==CurDay?'bold':'normal'}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch][selectedUserId].tip}}">{{sch}} {{recordedHash[sch][selectedUserId].dateRead}} </td>
+            <td class="{{recordedHash[sch][selectedUserId].cls}}" ng-style="{'text-decoration': CurWeekMap[sch]?'underline':'', 'font-weight': sch==CurDay?'bold':'normal'}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch][selectedUserId].tip}}" tooltip-append-to-body="true">{{sch}} {{recordedHash[sch][selectedUserId].dateRead}} </td>
 
 		</tr>
         </table>
