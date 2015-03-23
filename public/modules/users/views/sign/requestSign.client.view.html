@@ -23,7 +23,7 @@
                 <div data-ng-include="'modules/verses/views/versesInfo.client.style.html'"></div>
                 <table cellpadding="10" cellspacing="10">
                     <tr class="row" data-ng-repeat="schLine in curSchedule">
-                        <td class="{{recordedHash[sch].cls}}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch].tip}}">{{sch}} {{recordedHash[sch].dateRead}}</td>
+                        <td class="{{recordedHash[sch][selectedUserId].cls}}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch][selectedUserId].tip}}">{{sch}} {{recordedHash[sch][selectedUserId].dateRead}}</td>
 
                     </tr>
                 </table>

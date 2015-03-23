@@ -23,7 +23,7 @@
 	<div >
         <table cellpadding="10" cellspacing="10">
 		<tr class="row" data-ng-repeat="schLine in curSchedule">
-            <td class="{{recordedHash[sch].cls}}" ng-style="{'text-decoration': CurWeekMap[sch]?'underline':'', 'font-weight': sch==CurDay?'bold':'normal'}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch].tip}}">{{sch}} {{recordedHash[sch].dateRead}} </td>
+            <td class="{{recordedHash[sch][selectedUserId].cls}}" ng-style="{'text-decoration': CurWeekMap[sch]?'underline':'', 'font-weight': sch==CurDay?'bold':'normal'}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch][selectedUserId].tip}}">{{sch}} {{recordedHash[sch][selectedUserId].dateRead}} </td>
 
 		</tr>
         </table>
@@ -34,10 +34,10 @@
             <div class="col-xs-4">读经状况:</div>
         </div>
         <div class="row">
-            <div class="col-xs-4">姓名</div><div class="col-xs-1">阅读数量</div><div class="col-xs-1">晚读数量</div><div class="col-xs-1">总篇数</div><div class="col-xs-1">完成</div>
+            <div class="col-xs-1"></div><div class="col-xs-4">姓名</div><div class="col-xs-1">阅读数量</div><div class="col-xs-1">晚读数量</div><div class="col-xs-1">总篇数</div><div class="col-xs-1">完成</div>
         </div>
             <div class="row" data-ng-repeat="stat in allStats">
-                <div class="col-xs-4">{{stat.displayName}}</div><div class="col-xs-1">{{stat.read}}</div><div class="col-xs-1">{{stat.lates}}</div><div class="col-xs-1">{{stat.totalToDate}}</div><div class="col-xs-1">{{stat.completePct}}%</div><div class="col-xs-2">{{stat.signStatus}}</div>
+                <input type="radio" class="col-xs-1" name="radSelUser" value="false" data-ng-click="SetCurUserId(stat.userId)"><div class="col-xs-4">{{stat.displayName}}</div><div class="col-xs-1">{{stat.read}}</div><div class="col-xs-1">{{stat.lates}}</div><div class="col-xs-1">{{stat.totalToDate}}</div><div class="col-xs-1">{{stat.completePct}}%</div><div class="col-xs-2">{{stat.signStatus}}</div>
             </div>
     </div>
 

@@ -5,6 +5,7 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
 		$scope.authentication = Authentication;
 
         $scope.email = null;
+        $scope.selectedUserId = null;
         $scope.recordedHash = {};
         $scope.curSchedule = [];
         $scope.scheduleStarts = [];
@@ -14,6 +15,9 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
         function setScope(err) {
             $scope.curSchedule = VersesDirect.curSchedule;
             $scope.allStats = VersesDirect.allStats;
+            if (VersesDirect.allStats !== null && VersesDirect.allStats.length > 0) {
+                $scope.selectedUserId = VersesDirect.allStats[0].userId;
+            }
             $scope.recordedHash = VersesDirect.recordedHash;
             $scope.scheduleStarts = VersesDirect.scheduleStarts;
         }

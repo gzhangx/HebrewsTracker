@@ -65,6 +65,7 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
             allStats : {},
             readersByDate : [],
             signReqs : [],
+            selectedUserId : null,
             rcdDct : $resource('versesDirect/', {}, {}),
             qryDct: $resource('versesQry/:email', {email:'@email'}, {}),
             qryAll: $resource('versesQryAll', {}, {}),
@@ -176,7 +177,8 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
                 var v = svers[i];
                 var vpos = res.VersesInSchedule[v.title] || null;
                 if (vpos === null){
-                    recordedHash[v.title] = {valid: false, cls:'', tip:null};
+                    recordedHash[v.title]  = {};
+                    recordedHash[v.title][v.user._id] = {valid: false, cls:'', tip:null};
                     continue;
                 }
                 v.vpos = vpos;
@@ -205,13 +207,14 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
                     stat.dups[v.title] = 1;
                     stat.read++;
                 }
+                if ( (recordedHash[v.title] || null) === null) recordedHash[v.title] = {};
                 var dayDsp = res.AddDaysToYmd(new Date(v.dateRead), 0);
                 if (v.vpos.diff > 0) {
                     stat.latesByDay[v.vpos.diff] = (stat.latesByDay[v.vpos.diff] || 0) + 1;
                     stat.lates++;
-                    recordedHash[v.title] = {valid: true, late: v.vpos.diff, cls : 'late', tip: 'late for ' + v.vpos.diff+' days', dateRead: dayDsp};
+                    recordedHash[v.title][v.user._id] = {valid: true, late: v.vpos.diff, cls : 'late', tip: 'late for ' + v.vpos.diff+' days', dateRead: dayDsp};
                 } else
-                    recordedHash[v.title] = {valid: true, late: 0, cls : 'green', tip: 'Completed on ' + v.dateRead, dateRead: dayDsp};
+                    recordedHash[v.title][v.user._id] = {valid: true, late: 0, cls : 'green', tip: 'Completed on ' + v.dateRead, dateRead: dayDsp};
             }
 
             res.recordedHash = recordedHash;
@@ -238,6 +241,9 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
                 }
             }
             res.allStats = statsAry;
+            if (statsAry.length > 0) {
+                res.selectedUserId = statsAry[0].userId;
+            }
             var readersByDateAry = [];
             for (var rday in readersByDate) readersByDateAry.push(readersByDate[rday]);
             readersByDateAry.sort(function(a,b){ return a.date > b.date;});

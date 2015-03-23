@@ -14,6 +14,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         $scope.scheduleStarts = [];
         $scope.scheduleStartDate = null;
         $scope.scheduleStartSel ={};
+        $scope.selectedUserId = null;
         $scope.allStats = [];
         if (Authentication.user !== null && Authentication.user !== '') {
             $scope.hasAuth = true;
@@ -35,6 +36,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
             $scope.allStats = VersesDirect.allStats;
             $scope.recordedHash = VersesDirect.recordedHash;
             datashare.readersByDate = VersesDirect.readersByDate;
+            $scope.selectedUserId = VersesDirect.selectedUserId;
         }
         $scope.emailChanged = function() {
             $scope.resetAll();
@@ -43,6 +45,10 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
                 setScope();
             });
             return true;
+        };
+
+        $scope.SetCurUserId = function(uid) {
+            $scope.selectedUserId = uid;
         };
 
         $scope.scheduleChanged = function() {

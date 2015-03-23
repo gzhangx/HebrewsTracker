@@ -6,6 +6,7 @@ angular.module('users').controller('SignRequestController', ['$scope', 'Authenti
 
         $scope.email = null;
         $scope.recordedHash = {};
+        $scope.selectedUserId = null;
         $scope.curSchedule = [];
         $scope.scheduleStarts = [];
         $scope.scheduleStartSel ={};
@@ -15,6 +16,9 @@ angular.module('users').controller('SignRequestController', ['$scope', 'Authenti
         function setScope(err) {
             $scope.curSchedule = VersesDirect.curSchedule;
             $scope.allStats = VersesDirect.allStats;
+            if (VersesDirect.allStats !== null && VersesDirect.allStats.length > 0) {
+                $scope.selectedUserId = VersesDirect.allStats[0].userId;
+            }
             $scope.recordedHash = VersesDirect.recordedHash;
             $scope.scheduleStarts = VersesDirect.scheduleStarts;
             $scope.signReqs = VersesDirect.signReqs;
