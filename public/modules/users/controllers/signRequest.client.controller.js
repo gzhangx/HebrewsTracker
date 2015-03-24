@@ -13,6 +13,10 @@ angular.module('users').controller('SignRequestController', ['$scope', 'Authenti
         $scope.allStats = [];
         $scope.signList = [];
 
+        $scope.SetCurUserId = function(uid) {
+            $scope.selectedUserId = uid;
+        };
+
         function setScope(err) {
             $scope.curSchedule = VersesDirect.curSchedule;
             $scope.allStats = VersesDirect.allStats;
@@ -26,7 +30,7 @@ angular.module('users').controller('SignRequestController', ['$scope', 'Authenti
                 if ( $scope.signReqs[i].SignedBy)$scope.signReqs[i].checked = true;
             }
         }
-        VersesDirect.scheduleDctf($scope.authentication.user.email, function(){
+        VersesDirect.scheduleDctf('*', function(){
             setScope();
             var scheduleStarts = VersesDirect.scheduleStarts;
             $scope.scheduleStarts = scheduleStarts;

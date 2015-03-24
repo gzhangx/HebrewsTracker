@@ -175,6 +175,7 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
             var recordedHash = {};
             for (i = 0; i < svers.length; i++) {
                 var v = svers[i];
+                if (!v.user) v.user={}; //stub bad data
                 var vpos = res.VersesInSchedule[v.title] || null;
                 if (vpos === null){
                     recordedHash[v.title]  = {};

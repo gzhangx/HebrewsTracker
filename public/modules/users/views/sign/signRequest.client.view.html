@@ -8,6 +8,7 @@
                     <ul>
                         <li ng-repeat="req in signReqs">
                             <label>
+                                <input type="radio" name="radSelUser" value="false" data-ng-click="SetCurUserId(req.user._id)">
                                 <input type="checkbox" ng-model="req.checked">
                                 {{req.Desc}} {{req.ScheduleStartDay}} {{req.user.email}} {{req.user.displayName}}
                             </label>
@@ -28,7 +29,7 @@
                 <div data-ng-include="'modules/verses/views/versesInfo.client.style.html'"></div>
                 <table cellpadding="10" cellspacing="10">
                     <tr class="row" data-ng-repeat="schLine in curSchedule">
-                        <td class="{{recordedHash[sch][selectedUserId].cls}}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch][selectedUserId].tip}}">{{sch}} {{recordedHash[sch][selectedUserId].dateRead}}</td>
+                        <td class="{{recordedHash[sch][selectedUserId].cls}}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch][selectedUserId].tip}}" tooltip-append-to-body="true">{{sch}} {{recordedHash[sch][selectedUserId].dateRead}}</td>
 
                     </tr>
                 </table>
