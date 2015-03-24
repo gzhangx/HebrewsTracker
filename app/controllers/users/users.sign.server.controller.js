@@ -46,7 +46,7 @@ exports.requestSign = function(req, res) {
                     res.render('templates/request-sign-email', {
                         name: user.displayName,
                         appName: config.app.title,
-                        url: 'http://' + req.headers.host + '/sign/Sign/' +sreq._id
+                        url: 'http://' + req.headers.host + '/#!/user/signRequest?signId=' +sreq._id
                     }, function(err, emailHTML) {
                         done(err, emailHTML, usr);
                     });
