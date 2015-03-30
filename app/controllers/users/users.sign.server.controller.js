@@ -30,12 +30,12 @@ exports.requestSign = function(req, res) {
     var message = null;
 
     var doEmail = function(sreq) {
-        user = sreq.user;
+        //user = sreq.user;
       console.log('TODO: sending sign req email ' + sreq.user);
         async.waterfall([
                 function(done) {
                     User.findOne({roles:'lead'}, function(err, usr){
-                       console.log('requestSign, team lead '+ usr+ ' ' + err);
+                       console.log('requestSign, team lead '+ (usr !== null) + ' '  + user + ' ' + err);
                         if (err) return done(err);
                         if (usr) {
                             done(err, usr);
@@ -44,7 +44,7 @@ exports.requestSign = function(req, res) {
                 },
                 function(usr, done) {
                     res.render('templates/request-sign-email', {
-                        name: user.displayName,
+                        name: user.displayName + ' ' + user.email,
                         appName: config.app.title,
                         url: 'http://' + req.headers.host + '/#!/user/signRequest?signId=' +sreq._id
                     }, function(err, emailHTML) {
@@ -55,7 +55,7 @@ exports.requestSign = function(req, res) {
                     var mailOptions = {
                         to: user.email,
                         from: config.mailer.from,
-                        subject: 'Request Sign',
+                        subject: 'Request Sign from ' + user.displayName,
                         html: emailHTML
                     };
                     //console.log('DEBUG: remove the following 3 lines, NO Email sent to '+user.email);
