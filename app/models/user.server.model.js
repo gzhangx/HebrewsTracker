@@ -175,4 +175,13 @@ UserSchema.methods.IsAdmin = function() {
     return this.HasRole('admin');
 };
 
+UserSchema.methods.SetDisplayName = function() {
+    var an = /^[a-z0-9]+$/i
+    if (!this.firstName.match(an) || !this.lastName.match(an)) {
+        this.displayName = this.lastName+this.firstName;
+    }else {
+        this.displayName = this.firstName + ' ' + this.lastName
+    }
+};
+
 mongoose.model('User', UserSchema);
