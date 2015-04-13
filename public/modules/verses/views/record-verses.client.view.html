@@ -1,0 +1,39 @@
+<section data-ng-controller="UserSignController">
+	<div class="page-header">
+		<h1>New Verse</h1>
+	</div>
+	<div class="col-md-12">
+		<form name="articleForm" class="form-horizontal" data-ng-submit="SubmitMultiVerse()" novalidate>
+			<fieldset>
+                <div class="form-group" ng-class="{ 'has-error': articleForm.email.$dirty && articleForm.email.$invalid }">
+                    <label class="control-label" for="email">Email</label>
+                    <div class="controls">
+                        <input type="email" name="email" data-ng-model="email" id="email" class="form-control"  placeholder="Email" required data-ng-disabled="isAuthed">
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error': articleForm.group.$dirty && articleForm.group.$invalid }">
+                    <label class="control-label" for="group">Group</label>
+                    <div class="controls">
+                        <input name="group" type="text" data-ng-model="group" id="group" class="form-control" placeholder="Group">
+                    </div>
+                </div>
+                <div>
+                    <div data-ng-include="'modules/verses/views/versesInfo.client.style.html'"></div>
+                    <table cellpadding="10" cellspacing="10">
+                        <tr class="row" data-ng-repeat="schLine in curSchedule">
+                            <td class="{{recordedHash[sch][selectedUserId].cls}}" data-ng-repeat="sch in schLine" tooltip="{{recordedHash[sch][selectedUserId].tip}}" tooltip-append-to-body="true"><input type="checkbox" data-ng-hide="{{recordedHash[sch][selectedUserId].valid}}" ng-model="recordedHash[sch][selectedUserId].setNRead">{{sch}} {{recordedHash[sch][selectedUserId].dateRead}}</td>
+
+                        </tr>
+                    </table>
+
+                </div>
+				<div class="form-group">
+					<input type="submit" class="btn btn-default">
+				</div>
+				<div data-ng-show="error" class="text-danger">
+					<strong data-ng-bind="error"></strong>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</section>

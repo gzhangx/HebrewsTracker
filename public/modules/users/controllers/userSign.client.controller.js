@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('users').controller('UserSignController', ['$scope', 'Authentication','VersesDirect',
-	function($scope, Authentication, VersesDirect) {
+angular.module('users').controller('UserSignController', ['$scope', 'Authentication','VersesDirect','Verses',
+	function($scope, Authentication, VersesDirect,Verses) {
 		$scope.authentication = Authentication;
 
         $scope.email = null;
@@ -43,5 +43,31 @@ angular.module('users').controller('UserSignController', ['$scope', 'Authenticat
             });
         };
 
+        $scope.SubmitMultiVerse = function(){
+
+            var titles = [];
+            for(var i =0; i< $scope.curSchedule.length;i++) {
+                var schLine = $scope.curSchedule[i];
+                for (var j =0; j< schLine.length;j++) {
+                    var sch = schLine[j];
+                    if ($scope.recordedHash[sch] || null !== null)
+                    if ($scope.recordedHash[sch][$scope.selectedUserId].setNRead) titles.push(sch);
+                }
+            }
+
+            console.log(titles.length+' titlefirst=' + (titles.length>0?titles[0]:'null'));
+            //var titles = $scope.recordedHash.filter(function(x){return x.checked;}).map(function(x){ return x.title;});
+
+                var verse = new Verses({
+                    titles: titles,
+                    group: this.group
+                });
+                verse.$save(function(response) {
+                    $location.path('verses/' + response._id);
+                }, function(errorResponse) {
+                    $scope.error = errorResponse.data.message;
+                });
+
+        };
 	}
 ]);

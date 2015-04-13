@@ -17,6 +17,10 @@ angular.module('verses').config(['$stateProvider',
             url: '/recordVerse',
             templateUrl: 'modules/verses/views/record-verse.client.view.html'
         }).
+            state('createMultiVerse', {
+                url: '/recordVerses',
+                templateUrl: 'modules/verses/views/record-verses.client.view.html'
+            }).
 		state('viewVerse', {
 			url: '/verses/:verseId',
 			templateUrl: 'modules/verses/views/view-verse.client.view.html'

@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
 	Verse = mongoose.model('Verse'),
     User = mongoose.model('User'),
 	_ = require('lodash');
+var async = require('async');
 
 var UserCtrl = require('./users.server.controller');
 
@@ -17,84 +18,121 @@ var ObjectId = mongoose.Types.ObjectId;
  * Create a verse
  */
 exports.create = function(req, res) {
-	var verse = new Verse(req.body);
-    verse.dateRead = verse.created = new Date();
-    verse.ip = req.ip;
-    var title = verse.title || null;
-    if (title === null || title.trim() === '') {
-        return res.status(400).send({
-            message: 'empty title'
-        });
+    var titles = req.body.titles || null;
+    if (titles === null) {
+        titles = [];
+        titles.push(req.body.title);
     }
-    var saveFunc = function() {
-        verse.save(function(err) {
-            if (err) {
-                return res.status(400).send({
-                    message: errorHandler.getErrorMessage(err)
-                });
-            } else {
-                res.json(verse);
+
+    async.waterfall(titles.map(function(title){
+        return function(allResult, callback){
+            if (!callback){
+                callback = allResult;
+                allResult = [];
             }
-        });
-    };
-    var saveAndCheckDup = function() {
-        var today = new Date();
-        var utcMill = today.valueOf();
-        var utc6Days= 6*24*3600*1000;
-      Verse.findOne({title: title, user: new ObjectId(verse.user.id), created: {'$gte': new Date(utcMill - utc6Days)}}).exec(function(err, posts){
-        posts = posts || null;
-        if (posts === null) {
-            saveFunc();
+        var verse = new Verse(req.body);
+        verse.dateRead = verse.created = new Date();
+        verse.ip = req.ip;
+
+        //var title = verse.title || null;
+        if (title === null || title.trim() === '') {
+            return callback({ status : 400,
+                message: 'empty title'
+            }, allResult);
+        }
+        verse.title = title;
+        var saveFunc = function() {
+            verse.save(function(err) {
+                if (err) {
+                    return callback({
+                        status :400,
+                        message: errorHandler.getErrorMessage(err)
+                    }, allResult);
+                } else {
+                    //res.json(verse);
+                    allResult.push(verse);
+                    callback(null, allResult);
+                }
+            });
+        };
+        var saveAndCheckDup = function() {
+            var today = new Date();
+            var utcMill = today.valueOf();
+            var utc6Days= 12*24*3600*1000; //changed to 12 days
+            Verse.findOne({title: title, user: new ObjectId(verse.user.id), created: {'$gte': new Date(utcMill - utc6Days)}}).exec(function(err, posts){
+                posts = posts || null;
+                if (posts === null) {
+                    saveFunc();
+                }else {
+                    //return res.status(400).send({
+                    return callback({status: 400,
+                        message: 'You already submitted this verse'});
+                    //});
+                }
+            });
+        };
+        if ( (req.user || null) !== null) {
+            verse.user = req.user;
+            saveAndCheckDup();
         }else {
-            return res.status(400).send({
-                message: 'You already submitted this verse'
+            var email = req.body.email || null;
+            if (email === null || email.trim() === '') return res.status(400).send({ message: 'email required'});
+            email = email.toLowerCase();
+            if (!UserCtrl.validateEmail(req.body.email)) {
+                //return res.status(400).send({ message: 'err Invalid email'});
+                return callback({status: 400, message:'err Invalid email'}, allResult);
+            }
+            User.findOne({email: email}, function(err, user) {
+                err = err || null;
+                if (err !== null) {
+                    console.log(err);
+                    //return res.status(400).send({ message: 'err ' + err});
+                    return callback({status: 400, message: 'err ' + err}, allResult);
+                }
+                user = user || null;
+                if (user !== null) {
+                    verse.user = user;
+                    saveAndCheckDup();
+                } else {
+                    user = new User({
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        username: email,
+                        displayName: req.body.displayName,
+                        email: email,
+                        provider : 'unauthed'
+                    });
+                    user.save(function(err){
+                        err = err || null;
+                        if (err === null) {
+                            verse.user = user;
+                            saveFunc();
+                        }else {
+                            return callback({status:400,  message: 'err ' + err});
+                        }
+                    });
+
+                }
+
             });
         }
-      });
-    };
-    if ( (req.user || null) !== null) {
-	    verse.user = req.user;
-        saveAndCheckDup();
-    }else {
-        var email = req.body.email || null;
-        if (email === null || email.trim() === '') return res.status(400).send({ message: 'email required'});
-        email = email.toLowerCase();
-        if (!UserCtrl.validateEmail(req.body.email)) {
-            return res.status(400).send({ message: 'err Invalid email'});
+        };
+    }), function(err, result){
+        console.log('done, err=' + err+' res=' + result);
+        if (err || null !== null) {
+            return res.status(err.status).send({ message: err.message});
         }
-        User.findOne({email: email}, function(err, user) {
-            err = err || null;
-            if (err !== null) {
-                console.log(err);
-                return res.status(400).send({ message: 'err ' + err});
-            }
-            user = user || null;
-            if (user !== null) {
-                verse.user = user;
-                saveAndCheckDup();
-            } else {
-                user = new User({
-                    firstName: req.body.firstName,
-                    lastName: req.body.lastName,
-                    username: email,
-                    displayName: req.body.displayName,
-                    email: email,
-                    provider : 'unauthed'
-                });
-                user.save(function(err){
-                    err = err || null;
-                    if (err === null) {
-                    verse.user = user;
-                    saveFunc();
-                    }else {
-                        return res.status(400).send({ message: 'err ' + err});
-                    }
-                });
+        if ( (result || null) === null) {
+            return res.status(400).send({message: 'null result'});
+        }
 
-            }
+        console.log('reslen=' + result.length);
+        if (result.length === 1) {
+            return res.json(result[0]);
+        }
+        return res.json(result);
 
-        });
-    }
+    });
 
 
 };
