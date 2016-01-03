@@ -1,2 +1,2 @@
-"/c/Program Files/MongoDB 2.6 Standard/bin/mongod.exe" --dbpath /c/work/db &
+"/c/Program Files/MongoDB/Server/3.2/bin/mongod.exe" --dbpath /c/work/db &
 node server.js

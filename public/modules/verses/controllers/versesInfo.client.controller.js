@@ -54,7 +54,7 @@ angular.module('verses').controller('VersesInfoController', ['$scope', '$statePa
         $scope.scheduleChanged = function() {
             $scope.VersesInSchedule = {};
             if ( ($scope.scheduleStartSel || null) === null) return;
-            if ( ($scope.scheduleStartSel.ScheduleStartDay || null) === null) return;
+            //if ( ($scope.scheduleStartSel.ScheduleStartDay || null) === null) return;
             VersesDirect.setSchedule($scope.scheduleStartSel, setScope);
         };
 

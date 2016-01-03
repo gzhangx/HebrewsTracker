@@ -87,10 +87,10 @@ angular.module('verses').factory('VersesDirect', ['$resource','$http',
             var curDay = dateDiffInDays(startDate, new Date());
             var isCurrentSch = curDay < ((Math.floor(daysMax/7/13) + 1) * 7 *13);            
             var days = daysMax % 728;
-            var maxStart = Math.floor(days / 7 / 13) * 13;
+            var maxStart = Math.floor(daysMax / 7 / 13) * 13;
             var start = Math.floor(days/7/13)*13;
 
-            curDay = (curDay %728) - (maxStart *7);
+            curDay = (curDay %728) - (start *7);
 
             var scheduleStarts = [];
             for (var i = 0; i >=-1 ;i--) {
