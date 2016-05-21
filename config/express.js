@@ -92,7 +92,8 @@ module.exports = function(db) {
 		resave: true,
 		secret: config.sessionSecret,
 		store: new mongoStore({
-			db: db.connection.db,
+                        url: config.db.uri,
+			//db: db.connection.db,
 			collection: config.sessionCollection
 		}),
 		cookie: config.sessionCookie,
