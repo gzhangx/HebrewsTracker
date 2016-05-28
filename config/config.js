@@ -36,17 +36,23 @@ module.exports.getGlobbedFiles = function(globPatterns, removeRoot) {
 		if (urlRegex.test(globPatterns)) {
 			output.push(globPatterns);
 		} else {
-			glob(globPatterns, {
-				sync: true
-			}, function(err, files) {
+			var files = glob.sync(globPatterns);
 				if (removeRoot) {
 					files = files.map(function(file) {
+var excludes= removeRoot;
+if (_.isArray(excludes)) {
+            for (var i in excludes) {
+              if (excludes.hasOwnProperty(i)) {
+                file = file.replace(excludes[i], '');
+              }
+            }
+          } else
 						return file.replace(removeRoot, '');
+             return file;
 					});
 				}
 
 				output = _.union(output, files);
-			});
 		}
 	}
 
