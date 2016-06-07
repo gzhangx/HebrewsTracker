@@ -1,1 +1,0 @@
-sudo service hebrewsweb restart

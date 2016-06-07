@@ -1,4 +1,4 @@
-# iOS / Apple
+# OS
 # ===========
 .DS_Store
 ehthumbs.db
@@ -9,17 +9,38 @@ Thumbs.db
 # ==========================
 .nodemonignore
 .sass-cache/
-npm-debug.log
 node_modules/
-public/lib
+public/lib/
 app/tests/coverage/
 .bower-*/
 .idea/
+coverage/
 
 # MEAN.js app and assets
 # ======================
-config/sslcerts/*.pem
-access.log
+public/dist/
+uploads
+modules/users/client/img/profile/uploads
+config/env/local.js
+config/env/local-*.js
+*.pem
+
+# Ignoring MEAN.JS's gh-pages branch for documenation
+_site/
+
+# General
+# =======
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.tmp
+*.bak
+*.swp
+logs/
+build/
 
 # Sublime editor
 # ==============
@@ -40,16 +61,15 @@ local.properties
 # ========
 *.iml
 
-# General
-# =======
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
-*.tmp
-*.bak
-*.swp
-logs/
-build/
+# Cloud9 IDE
+# =========
+.c9/
+data/
+mongod
+
+# Visual Studio
+# =========
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
