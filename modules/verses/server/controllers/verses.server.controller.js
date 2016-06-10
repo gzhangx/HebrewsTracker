@@ -16,7 +16,10 @@ var async = require('async');
 var UserCtrl = require(path.resolve('./modules/users/server/controllers/users.server.controller'));
 
 var ObjectId = mongoose.Types.ObjectId;
-
+exports.validateEmail = function validateEmail(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+};
 /**
  * Create a verse
  */
@@ -81,7 +84,7 @@ exports.create = function(req, res) {
             var email = req.body.email || null;
             if (email === null || email.trim() === '') return res.status(400).send({ message: 'email required'});
             email = email.toLowerCase();
-            if (!UserCtrl.validateEmail(req.body.email)) {
+            if (!exports.validateEmail(req.body.email)) {
                 //return res.status(400).send({ message: 'err Invalid email'});
                 return callback({status: 400, message:'err Invalid email'}, allResult);
             }
