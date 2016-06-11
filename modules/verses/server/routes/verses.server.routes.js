@@ -24,7 +24,7 @@ module.exports = function(app) {
 		.put(verses.hasAuthorization, verses.update)
 		.delete(verses.hasAuthorization, verses.delete);
 
-	app.route('/blankView').get(verses.renderBlankview);
+	app.route('/blankView/*').get(verses.renderBlankview);
 	// Finish by binding the verse middleware
 	app.param('verseId', verses.verseByID);
 };
