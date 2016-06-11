@@ -1,4 +1,9 @@
 'use strict';
 
 // Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('verses');
+
+(function (app) {
+  'use strict';
+
+  app.registerModule('verses', ['core', 'ui.router']);  
+}(ApplicationConfiguration));
