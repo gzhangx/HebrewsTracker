@@ -6,6 +6,7 @@
 var users = require('../../app/controllers/users.server.controller'),
 	verses = require('../../app/controllers/verses.server.controller');
 
+var data = require('../../app/controllers/getdata');
 module.exports = function(app) {
 	// Verse Routes
 	app.route('/verses')
@@ -27,4 +28,6 @@ module.exports = function(app) {
 
 	// Finish by binding the verse middleware
 	app.param('verseId', verses.verseByID);
+
+	app.route('/versesshow').get(data.loaddata);
 };
