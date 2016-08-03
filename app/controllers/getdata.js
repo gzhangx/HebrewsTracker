@@ -247,7 +247,7 @@ module.exports.loaddata=function(req, res) {
     var dt = loadDataSimpleOnly(dd);
     res.charset = 'utf-8';
     res.setHeader('content-type', 'text/html;charset=utf-8');
-    res.end(dd+' '+dt.Subject+ '<br><pre>'+dt.Data+'</pre>', 'utf-8');
+    res.end(dt.Subject+ '<br><pre>'+dt.Data+'</pre>', 'utf-8');
     return dt.subject+ ' ' + dt.Data;
 }
 //ScheduleToJson();
